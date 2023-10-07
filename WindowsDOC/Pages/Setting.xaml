@@ -1,0 +1,89 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WindowsDOC.Pages"
+      x:Class="WindowsDOC.Pages.Setting"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="428" d:DesignWidth="558"
+      Title="Setting" Foreground="{DynamicResource ColorBrushMain1}">
+
+    <Page.Resources>
+        <Style x:Key="StackPanelStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+        <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="ColorPickerStyle" TargetType="{x:Type xctk:ColorPicker}">
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Margin" Value="0,4,0,4"/>
+            <Setter Property="ShowRecentColors" Value="True"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushMain1}"/>
+            <Setter Property="DropDownBackground" Value="{DynamicResource ColorBrushMain1}"/>
+            <Setter Property="DropDownBorderBrush" Value="{x:Null}"/>
+            <Setter Property="HeaderBackground" Value="{DynamicResource ColorBrushMain2}"/>
+            <Setter Property="HeaderForeground" Value="{DynamicResource ColorBrushMain3}"/>
+            <Setter Property="TabBackground" Value="{DynamicResource ColorBrushMain2}"/>
+            <Setter Property="TabForeground" Value="{DynamicResource ColorBrushMain3}"/>
+            <Setter Property="ShowDropDownButton" Value="False"/>
+            <EventSetter Event="SelectedColorChanged" Handler="ColorPicker_SelectedColorChanged"/>
+        </Style>
+        
+    </Page.Resources>
+
+    <Grid x:Name="GridLayout">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <StackPanel Style="{DynamicResource StackPanelStyle}" >
+                <TextBlock Style="{DynamicResource TextBlockStyle}" Text="颜色配置（全透明会导致事件异常，谨慎操作）" Foreground="{DynamicResource ColorBrushMain2}" Width="{Binding Width, ElementName=GridLayout}"/>
+            </StackPanel>
+
+            <WrapPanel>
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调1"/>
+                    <xctk:ColorPicker x:Name="ColorPickerColorMain1" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain1}"/>
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调2" />
+                    <xctk:ColorPicker x:Name="ColorPickerColorMain2" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain2}"/>
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调3" />
+                    <xctk:ColorPicker x:Name="ColorPickerColorMain3" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain3}"/>
+                </StackPanel>
+                
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口背景"/>
+                    <xctk:ColorPicker x:Name="ColorPickerColorBackground"  Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorBackground}"/>
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口边框"/>
+                    <xctk:ColorPicker x:Name="ColorPickerColorBackgroundBorder" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorBackgroundBorder}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="侧边按钮背景" />
+                    <xctk:ColorPicker x:Name="ColorPickerColorSidebarButton" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorSidebarButton}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="顶栏背景" />
+                    <xctk:ColorPicker x:Name="ColorPickerColorTopBar" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorTopBar}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主框架背景"/>
+                    <xctk:ColorPicker x:Name="ColorPickerColorMainFrame" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMainFrame}"/>
+                </StackPanel>
+         
+            </WrapPanel>
+        </StackPanel>
+
+        
+    </Grid>
+</Page>
