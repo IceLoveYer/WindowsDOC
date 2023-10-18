@@ -7,178 +7,60 @@
       xmlns:local="clr-namespace:WindowsDOC.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="428" d:DesignWidth="558"
-      Title="SystemConfig">
+      Title="SystemConfig" Foreground="{DynamicResource ColorBrushMain1}">
 
     <Page.Resources>
         <!--定义 ListViewItem 的样式-->
-        <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
-            <!--<EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown"/>
-            <EventSetter Event="PreviewDrop" Handler="ListViewItem_PreviewDrop"/>
-            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>-->
-
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border Name="BorderBackground" CornerRadius="5"  Margin="2,0,2,0" Background="White" >
-                            <ContentPresenter HorizontalAlignment="Center" ToolTip="{Binding Name}"></ContentPresenter>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"></Condition>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="BorderBackground" Value="{DynamicResource ColorBrush1}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource ColorBrush0}"></Setter>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"></Condition>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="BorderBackground" Value="{DynamicResource ColorBrush2}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource ColorBrush0}"></Setter>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-
-        </Style>
-
-        <!--定义菜单的样式-->
-        <Style x:Key="CustomMenuStyle" TargetType="ContextMenu">
-            <Setter Property="HorizontalOffset" Value="110"/>
-            <Setter Property="VerticalOffset" Value="10"/>
-            <!-- 设置渐变色、圆角 -->
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ContextMenu">
-                        <Border BorderBrush="{DynamicResource ColorBrush0}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5" Padding="10" >
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="{DynamicResource Color1}" Offset="0" />
-                                    <GradientStop Color="{DynamicResource Color2}" Offset="0.8" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <ItemsPresenter />
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border x:Name="BorderBackground" CornerRadius="5"  Width="550"  Background="{DynamicResource ColorBrushMainFrame}"  Padding="2">
+                            <ContentPresenter/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
-        <!--定义菜单项目的样式-->
-        <Style x:Key="MenuItemStyle" TargetType="MenuItem">
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Foreground" Value="{DynamicResource ColorBrush0}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="MenuItem">
-                        <Border x:Name="menuItemBorder" CornerRadius="5" Background="{TemplateBinding Background}" Padding="5">
-                            <Grid>
-                                <ContentPresenter Content="{TemplateBinding Header}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                <!--二级菜单-->
-                                <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" AllowsTransparency="True" Placement="Center">
-                                    <Border BorderBrush="{DynamicResource ColorBrush0}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5" Padding="10">
-                                        <Border.Background>
-                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                <GradientStop Color="{DynamicResource Color1}" Offset="0" />
-                                                <GradientStop Color="{DynamicResource Color2}" Offset="0.8" />
-                                            </LinearGradientBrush>
-                                        </Border.Background>
-                                        <ItemsPresenter />
-                                    </Border>
-                                </Popup>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <!--鼠标悬停时高亮显示-->
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ColorBrush0}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource ColorBrush2}"/>
-                </Trigger>
-
-            </Style.Triggers>
-        </Style>
-        <!--定义菜单项目图标的样式-->
-        <Style x:Key="MenuItemIcon" TargetType="fa5:SvgAwesome">
-            <Setter Property="Margin" Value="2,0,4,0"/>
-            <Setter Property="Height" Value="15"/>
-            <Setter Property="Width" Value="15"/>
-            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type MenuItem}}}"/>
-        </Style>
-
-        <!--定义按钮-->
-        <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{DynamicResource ColorBrush2}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ColorBrush0}"/>
-            <Setter Property="Margin" Value="2"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ColorBrush1}"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
     </Page.Resources>
 
-    <Grid x:Name="GridLayout" Background="White">
+    <Grid x:Name="GridLayout">
         <!--定义布局-->
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
+            
+        <TextBlock Foreground="{DynamicResource ColorBrushMain2}" Width="{Binding Width, ElementName=GridLayout}" Text="电脑概览" TextAlignment="Center" VerticalAlignment="Center"/>
 
+        <!--项目-->
+        <ListView  Grid.Row="1" x:Name="ListViewItems" ItemContainerStyle="{DynamicResource ListViewItemStyle}" d:ItemsSource="{d:SampleData ItemCount=10}" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain2}" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <!--定义滚动条-->
+            <ListView.Resources>
+                <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBarStyle}" />
+            </ListView.Resources>
+            <!--内嵌布局-->
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <!--模板组成-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="32"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-        <!--展开编辑-->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="136"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock x:Name="TextBlockEdit" Grid.Column="0" Text="还没好呢瞅啥"   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <Border Grid.Column="1" CornerRadius="5" BorderBrush="{DynamicResource ColorBrush2}" BorderThickness="1" Margin="5,2,5,2">
-                <TextBox x:Name="TextBoxEditName" BorderThickness="0" Background="{x:Null}"  VerticalAlignment="Center" />
-            </Border>
-
-        </Grid>
-        <Grid Grid.Row="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock x:Name="TextBlockEdit1" Text="还没好呢瞅啥" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="TextBlockEdit2" Text="还没好呢瞅啥" Margin="0,8,0,2" HorizontalAlignment="Center"/>
-                <RadioButton x:Name="RadioButtonPath" Content="还没好呢瞅啥" IsChecked="True"/>
-                <RadioButton x:Name="RadioButtonOpenDirectory" Content="还没好呢瞅啥"/>
-                <RadioButton x:Name="RadioButtonRunCommand" Content="还没好呢瞅啥"/>
-            </StackPanel>
-
-            <Border Grid.Column="1" CornerRadius="5" BorderBrush="{DynamicResource ColorBrush2}" BorderThickness="1" Margin="5,2,5,5">
-                <TextBox x:Name="TextBoxEditContent" BorderThickness="0" Background="{x:Null}" />
-            </Border>
-        </Grid>
-
-
+                        <fa5:SvgAwesome Grid.Column="0" Icon="{Binding Icon}" Margin="4" Width="20" Height="20" Foreground="{DynamicResource ColorBrushMain2}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBox Grid.Column="2" Text="{Binding Value}" Style="{StaticResource TextBoxStyle}" TextWrapping="Wrap"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

@@ -24,8 +24,8 @@
             <SolidColorBrush x:Key="ColorBrushTopBar" Color="{StaticResource ColorTopBar}"/>
             <SolidColorBrush x:Key="ColorBrushMainFrame" Color="{StaticResource ColorMainFrame}"/>
 
-            
-            
+
+
             <!--定义菜单的样式-->
             <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
                 <!--<Setter Property="HorizontalOffset" Value="10"/>
@@ -121,7 +121,8 @@
                 <Setter Property="Width" Value="18"/>
                 <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}"/>
             </Style>
-            
+
+
             <!--定义单选框-->
             <Style x:Key="RadioButtonStyle" TargetType="{x:Type RadioButton}">
                 <Setter Property="Background" Value="{x:Null}"/>
@@ -129,6 +130,87 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushMain1}"/>
                 <Setter Property="Margin" Value="2"/>
             </Style>
+
+
+            <!--定义编辑框-->
+            <Style x:Key="TextBoxStyle" TargetType="TextBox">
+                <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border BorderBrush="{DynamicResource ColorBrushMain1}" CornerRadius="5" BorderThickness="1" Margin="5,2,5,2">
+                                <ScrollViewer x:Name="PART_ContentHost" Background="{x:Null}" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu Style="{StaticResource ContextMenuStyle}">
+                            <!-- 默认的菜单项会自动出现，如复制、粘贴和剪切 -->
+                            <MenuItem Command="ApplicationCommands.Copy" Style="{StaticResource MenuItemStyle}" />
+                            <MenuItem Command="ApplicationCommands.Paste" Style="{StaticResource MenuItemStyle}" />
+                            <MenuItem Command="ApplicationCommands.Cut" Style="{StaticResource MenuItemStyle}" />
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+
+            <!--定义滚动条-->
+            <Style x:Key="ScrollBarStyle" TargetType="ScrollBar">
+                <Setter Property="Width" Value="20"/>
+                <Setter Property="Margin" Value="5,0,5,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="20"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- 定义滚动条的背景 -->
+                                <Border Grid.RowSpan="3" Background="{DynamicResource ColorBrushMain2}" CornerRadius="5" />
+                                <!-- 定义滚动条的上按钮 -->
+                                <Button Grid.Row="0" Style="{DynamicResource ButtonStyle}" Command="ScrollBar.LineUpCommand">
+                                    <fa5:SvgAwesome Icon="Solid_AngleUp" Style="{DynamicResource ButtonIcon}"/>
+                                </Button>
+                                <!-- 定义滚动条的下按钮 -->
+                                <Button Grid.Row="2" Style="{DynamicResource ButtonStyle}" Command="ScrollBar.LineDownCommand">
+                                    <fa5:SvgAwesome Icon="Solid_AngleDown" Style="{DynamicResource ButtonIcon}"/>
+                                </Button>
+
+                                <!-- 定义滚动条的滑块，设置跟随 -->
+                                <Track Grid.Row="1" x:Name="PART_Track" IsDirectionReversed="True" >
+                                    <Track.Thumb>
+                                        <Thumb>
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border CornerRadius="5" Margin="3,0,3,0">
+                                                        <Border.Background>
+                                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                                <GradientStop Color="{DynamicResource ColorMain2}" Offset="0"/>
+                                                                <GradientStop Color="{DynamicResource ColorMain1}" Offset="0.25"/>
+                                                                <GradientStop Color="{DynamicResource ColorMain1}" Offset="0.75"/>
+                                                                <GradientStop Color="{DynamicResource ColorMain2}" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

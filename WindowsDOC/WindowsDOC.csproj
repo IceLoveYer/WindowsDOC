@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <PackageProjectUrl>www.iceyer.cn</PackageProjectUrl>
     <Company>IceYer</Company>
     <Authors>氷</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>False</UseWindowsForms>
     <ApplicationIcon>WindowsDOC.ico</ApplicationIcon>
+    <Copyright>IceYer原创发布</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -32,6 +33,7 @@
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="System.Management" Version="8.0.0-rc.2.23479.6" />
   </ItemGroup>
 
   <ItemGroup>

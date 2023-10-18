@@ -734,12 +734,12 @@ namespace WindowsDOC.Pages
             // 分组不得为0
             if (ItemsGroups.Count > 0)
             {
-                ObservableCollection<MyItemGroup> SerializedGroups = []; // 实例化分组
+                ObservableCollection<MyItemGroup> SerializedGroups = new(); // 实例化分组
                 for (int i = 0; i < ItemsGroups.Count; i++)
                 {
                     var TempGroup = ItemsGroups[i]; // 获取分组
 
-                    ObservableCollection<MyItem> SerializedItems = []; // 实例化项目
+                    ObservableCollection<MyItem> SerializedItems = new(); // 实例化项目
                     if (TempGroup.Items != null)
                     {
                         for (int ii = 0; ii < TempGroup.Items.Count; ii++)

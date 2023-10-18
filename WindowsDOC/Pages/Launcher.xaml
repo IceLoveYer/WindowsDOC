@@ -24,7 +24,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="BorderBackground" CornerRadius="5"  Margin="2,0,2,0" Background="{DynamicResource ColorBrushMainFrame}"  >
+                        <Border x:Name="BorderBackground" CornerRadius="5" Margin="2" Padding="2" Background="{DynamicResource ColorBrushMainFrame}"  >
                             <ContentPresenter/>
                         </Border>
 
@@ -61,18 +61,19 @@
         </Grid.RowDefinitions>
 
         <!--分组-->
-        <ListView x:Name="ListViewGroups" ItemContainerStyle="{DynamicResource ListViewItemStyle}"  d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="{x:Null}" AllowDrop="True" SelectionChanged="ListViewGroups_SelectionChanged" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain2}" SelectionMode="Single">
+        <ListView x:Name="ListViewGroups" ItemContainerStyle="{DynamicResource ListViewItemStyle}" d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="{x:Null}" AllowDrop="True" SelectionChanged="ListViewGroups_SelectionChanged" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain2}" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <!--内嵌布局-->
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType={x:Type ScrollContentPresenter}}}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <WrapPanel/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-
+            <!--模板组成-->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border CornerRadius="5" BorderBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"   Height="18" Margin="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding Image}" Margin="0,0,2,0" />
+                    <Border Height="18">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="{Binding Image}"/>
                             <TextBlock Text="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
@@ -112,11 +113,10 @@
 
         
         <!--展开收缩分组-->
-        <Button Grid.Row="1" Click="Button_Click" Width="50" Background="{DynamicResource ColorBrushMain1}" BorderBrush="{x:Null}" Foreground="{x:Null}">
-            <fa5:SvgAwesome x:Name="SvgAwesomeDraw" Icon="Solid_ChevronDown" HorizontalAlignment="Center" VerticalAlignment="Center" Height="12" Foreground="{DynamicResource ColorBrushMain3}"/>
+        <Button Grid.Row="1" Click="Button_Click" Style="{DynamicResource ButtonStyle}" Width="50">
+            <fa5:SvgAwesome x:Name="SvgAwesomeDraw" Icon="Solid_ChevronDown"  Style="{DynamicResource ButtonIcon}" Height="12" VerticalAlignment="Center"/>
         </Button>
 
-        
         <!--展开编辑分组-->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -126,9 +126,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="TextBlockGroup" Text="分组名称" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <Border Grid.Column="1" CornerRadius="5" BorderBrush="{DynamicResource ColorBrushMain1}" BorderThickness="1" Margin="5,2,5,2">
-                <TextBox x:Name="TextBoxGroup" BorderThickness="0" Background="{x:Null}"  VerticalAlignment="Center" Foreground="{DynamicResource ColorBrushMain1}" />
-            </Border>
+            <TextBox x:Name="TextBoxGroup" Grid.Column="1" Style="{StaticResource TextBoxStyle}" />
             <StackPanel Grid.Column="2" Orientation="Horizontal" >
                 <Button Style="{DynamicResource ButtonStyle}" Width="30" Click="ButtonGroupImage_Click">
                     <Image x:Name="ImageGroup" Width="24" Height="24" Margin="4,0,4,0"/>
@@ -141,62 +139,69 @@
         
         
         <!--项目-->
-        <ListView  Grid.Row="3" x:Name="ListViewItems" ItemContainerStyle="{DynamicResource ListViewItemStyle}" d:ItemsSource="{d:SampleData ItemCount=10}" BorderBrush="{x:Null}" AllowDrop="True" ContextMenuOpening="ListViewItems_ContextMenuOpening" DragEnter="ListViewItems_DragEnter" Drop="ListViewItems_Drop" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain2}" SelectionMode="Single">
+            <ListView x:Name="ListViewItems" Grid.Row="3" ItemContainerStyle="{DynamicResource ListViewItemStyle}" d:ItemsSource="{d:SampleData ItemCount=10}" BorderBrush="{x:Null}" AllowDrop="True" ContextMenuOpening="ListViewItems_ContextMenuOpening" DragEnter="ListViewItems_DragEnter" Drop="ListViewItems_Drop" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain2}" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Padding="0,10,0,0">
+                <!--定义滚动条-->
+                <ListView.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBarStyle}" />
+                </ListView.Resources>
+            <!--内嵌布局-->
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType={x:Type ScrollContentPresenter}}}"/>
+                    <WrapPanel HorizontalAlignment="Center" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
+            <!--模板组成-->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border CornerRadius="5" Width="76" Height="76" Margin="4">
+                    <Border Width="84" Height="76">
                         <StackPanel>
-                            <Image Source="{Binding Image}"   Width="40" Height="40" Margin="0,3,0,3" />
-                            <TextBlock Text="{Binding Text}"  TextAlignment="Center"  Margin="3,0,3,0" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" />
+                            <Image Source="{Binding Image}" Width="40" Height="40" Margin="0,4,0,0"/>
+                            <TextBlock Text="{Binding Text}" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
 
-            <!--菜单-->
-            <ListView.ContextMenu>
-                <ContextMenu Style="{DynamicResource ContextMenuStyle}">
-                    <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_AddItem_Click">
-                        <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_PlusSquare"/>
-                                <TextBlock Text="添加项目" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_EditItem_Click">
-                        <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_PenSquare"/>
-                                <TextBlock Text="编辑项目" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_DeleteItem_Click">
-                        <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_TrashAlt"/>
-                                <TextBlock Text="删除项目" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Style="{DynamicResource MenuItemStyle}" x:Name="MeunItemMoveGroups" >
-                        <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_Stream"/>
-                                <TextBlock Text="移动项目" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>
+                <!--菜单-->
+                <ListView.ContextMenu>
+                    <ContextMenu Style="{DynamicResource ContextMenuStyle}">
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_AddItem_Click">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_PlusSquare"/>
+                                    <TextBlock Text="添加项目" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_EditItem_Click">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_PenSquare"/>
+                                    <TextBlock Text="编辑项目" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" Click="MenuItem_DeleteItem_Click">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_TrashAlt"/>
+                                    <TextBlock Text="删除项目" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Style="{DynamicResource MenuItemStyle}" x:Name="MeunItemMoveGroups" >
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <fa5:SvgAwesome Style="{DynamicResource MenuItemIcon}" Icon="Solid_Stream"/>
+                                    <TextBlock Text="移动项目" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
 
+        
         
         <!--展开编辑项目-->
         <Grid Grid.Row="4">
@@ -211,9 +216,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="TextBlockItem" Text="项目名称"   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <Border Grid.Column="1" CornerRadius="5" BorderBrush="{DynamicResource ColorBrushMain1}" BorderThickness="1" Margin="5,2,5,2">
-                <TextBox x:Name="TextBoxItem" BorderThickness="0" Background="{x:Null}"  VerticalAlignment="Center" Foreground="{DynamicResource ColorBrushMain1}" />
-            </Border>
+            <TextBox x:Name="TextBoxItem" Grid.Column="1" Style="{StaticResource TextBoxStyle}" />
             <StackPanel Grid.Column="2" Orientation="Horizontal" >
                 <Button Style="{DynamicResource ButtonStyle}" Width="30" Click="ButtonItemImage_Click">
                     <Image x:Name="ImageItem" Width="24" Height="24" Margin="4,0,4,0"/>
@@ -224,9 +227,7 @@
 
 
             <TextBlock Text="项目内容" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
-            <Border Grid.Column="1" Grid.Row="1"  CornerRadius="5" BorderBrush="{DynamicResource ColorBrushMain1}" BorderThickness="1" Margin="5,2,5,5">
-                <TextBox x:Name="TextBoxEditContent" BorderThickness="0" Background="{x:Null}" Foreground="{DynamicResource ColorBrushMain1}"  AcceptsReturn="True" VerticalAlignment="Top" TextWrapping="Wrap"/>
-            </Border>
+            <TextBox x:Name="TextBoxEditContent" Grid.Column="1" Grid.Row="1"  Style="{StaticResource TextBoxStyle}" AcceptsReturn="True" />
 
             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="2">
                 <TextBlock Text="项目类型" HorizontalAlignment="Center"/>

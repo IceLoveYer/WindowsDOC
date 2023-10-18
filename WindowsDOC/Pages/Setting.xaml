@@ -22,7 +22,7 @@
         </Style>
         <Style x:Key="ColorPickerStyle" TargetType="{x:Type xctk:ColorPicker}">
             <Setter Property="Width" Value="90"/>
-            <Setter Property="Margin" Value="0,4,0,4"/>
+            <Setter Property="Margin" Value="0,4,10,4"/>
             <Setter Property="ShowRecentColors" Value="True"/>
             <Setter Property="Background" Value="{x:Null}"/>
             <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}"/>
@@ -45,16 +45,22 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <StackPanel Style="{DynamicResource StackPanelStyle}" >
+            <StackPanel Style="{DynamicResource StackPanelStyle}" HorizontalAlignment="Center" >
                 <TextBlock Style="{DynamicResource TextBlockStyle}" Text="颜色配置（全透明会导致事件异常，谨慎操作）" Foreground="{DynamicResource ColorBrushMain2}" Width="{Binding Width, ElementName=GridLayout}"/>
             </StackPanel>
 
-            <WrapPanel>
+            <WrapPanel HorizontalAlignment="Center">
                 <StackPanel Style="{DynamicResource StackPanelStyle}">
                     <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调1"/>
                     <xctk:ColorPicker x:Name="ColorPickerColorMain1" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain1}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
                     <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调2" />
                     <xctk:ColorPicker x:Name="ColorPickerColorMain2" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain2}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
                     <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调3" />
                     <xctk:ColorPicker x:Name="ColorPickerColorMain3" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorMain3}"/>
                 </StackPanel>
@@ -62,6 +68,9 @@
                 <StackPanel Style="{DynamicResource StackPanelStyle}">
                     <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口背景"/>
                     <xctk:ColorPicker x:Name="ColorPickerColorBackground"  Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorBackground}"/>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
                     <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口边框"/>
                     <xctk:ColorPicker x:Name="ColorPickerColorBackgroundBorder" Style="{DynamicResource ColorPickerStyle}" SelectedColor="{DynamicResource ColorBackgroundBorder}"/>
                 </StackPanel>
