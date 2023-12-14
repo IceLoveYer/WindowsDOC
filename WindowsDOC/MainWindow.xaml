@@ -1,24 +1,36 @@
-﻿<Window x:Name="window" x:Class="WindowsDOC.MainWindow"
-        xmlns:local="clr-namespace:WindowsDOC"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:fa5="http://schemas.fontawesome.com/icons/"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
-        Title="WindowsDOC" Height="600" Width="800" AllowsTransparency="True" WindowStyle="None"
-        WindowStartupLocation="CenterScreen" Background="{x:Null}" UseLayoutRounding="False" SizeChanged="Window_SizeChanged" MinWidth="800" MinHeight="600" Foreground="{DynamicResource ColorBrushMain3}">
-    
+﻿<Window
+    x:Class="WindowsDOC.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:local="clr-namespace:WindowsDOC"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    x:Name="window"
+    Title="WindowsDOC"
+    Width="800"
+    Height="600"
+    MinWidth="800"
+    MinHeight="480"
+    AllowsTransparency="True"
+    Background="{x:Null}"
+    Foreground="{DynamicResource ColorBrushMain3}"
+    SizeChanged="Window_SizeChanged"
+    UseLayoutRounding="False"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+
     <Window.Resources>
-        <!--侧边栏 按钮-->
+        <!--  侧边栏 按钮  -->
         <Style x:Key="MenuButton" TargetType="Button">
-            <Setter Property="Background" Value="{DynamicResource ColorBrushSidebarButton}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Margin" Value="15 4 15 0"/>
+            <Setter Property="Background" Value="{DynamicResource ColorBrushSidebarButton}" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="Height" Value="45" />
+            <Setter Property="Margin" Value="15,4,15,0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -26,188 +38,305 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}"/>
+                    <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
-        <!--侧边栏 按钮图标-->
+
+        <!--  侧边栏 按钮图标  -->
         <Style x:Key="MenuButtonIcon" TargetType="fa5:SvgAwesome">
-            <Setter Property="Margin" Value="10,0,0,0"/>
-            <Setter Property="Height" Value="18"/>
-            <Setter Property="Width" Value="18"/>
-            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}"/>
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
         </Style>
-        
-        <!--侧边栏 按钮文字-->
+
+        <!--  侧边栏 按钮文字  -->
         <Style x:Key="MenuButtonText" TargetType="TextBlock">
-            <Setter Property="Margin" Value="12,0,0,0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}"/>
+            <Setter Property="Margin" Value="12,0,0,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
         </Style>
-        <!--侧边栏 按钮激活背景-->
-        <Style x:Key="ActivatedMenuButton" TargetType="Button"  BasedOn="{StaticResource MenuButton}">
-            <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain2}"/>
+        <!--  侧边栏 按钮激活背景  -->
+        <Style
+            x:Key="ActivatedMenuButton"
+            BasedOn="{StaticResource MenuButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain2}" />
         </Style>
 
     </Window.Resources>
 
-    <!--通过拖拽调整“透明窗口”的尺寸-->
+    <!--  通过拖拽调整“透明窗口”的尺寸  -->
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0"  ResizeBorderThickness="15"/>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="15" />
     </WindowChrome.WindowChrome>
 
     <Grid>
-        <!--设置托盘-->
-        <tb:TaskbarIcon x:Name="MyNotifyIcon"
-                IconSource="/WindowsDOC.ico"
-                ToolTipText="{Binding Title, ElementName=window}" TrayLeftMouseDown="MyNotifyIcon_TrayLeftMouseDown">
-            <!-- 上下文菜单 -->
+        <!--  设置托盘  -->
+        <tb:TaskbarIcon
+            x:Name="MyNotifyIcon"
+            IconSource="/Image/WindowsDOC.ico"
+            ToolTipText="WindowsDOC"
+            TrayLeftMouseDown="MyNotifyIcon_TrayLeftMouseDown">
+            <!--  上下文菜单  -->
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu Style="{DynamicResource ContextMenuStyle}">
-                    <MenuItem  Style="{DynamicResource MenuItemStyle}" Header="显示窗口" Click="MyNotifyIconMenuItemShow_Click"/>
-                    <MenuItem  Style="{DynamicResource MenuItemStyle}" Header="退出程序" Click="MyNotifyIconMenuItemExit_Click"/>
+                <ContextMenu Style="{DynamicResource MenuStyle}">
+                    <MenuItem
+                        Click="MyNotifyIconMenuItemShow_Click"
+                        Header="显示窗口"
+                        Style="{DynamicResource MenuItemStyle}" />
+                    <MenuItem
+                        Click="MyNotifyIconMenuItemExit_Click"
+                        Header="退出程序"
+                        Style="{DynamicResource MenuItemStyle}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
 
 
-        <!--主窗口界面，内边距+圆角+阴影-->
-        <Border x:Name="BorderMain" CornerRadius="15" Padding="10" BorderThickness="1,1,1,1" Margin="10" BorderBrush="{DynamicResource ColorBrushBackgroundBorder}" Background="{DynamicResource ColorBrushBackground}">
+        <!--  主窗口界面，内边距+圆角+阴影  -->
+        <Border
+            x:Name="BorderMain"
+            Margin="10"
+            Padding="10"
+            Background="{DynamicResource ColorBrushBackground}"
+            BorderBrush="{DynamicResource ColorBrushBackgroundBorder}"
+            BorderThickness="1,1,1,1"
+            CornerRadius="15">
             <Border.Effect>
-                <DropShadowEffect Color="Black" Direction="0" ShadowDepth="0" Opacity="0.25" BlurRadius="15"/>
+                <DropShadowEffect
+                    BlurRadius="15"
+                    Direction="0"
+                    Opacity="0.25"
+                    ShadowDepth="0"
+                    Color="Black" />
             </Border.Effect>
 
-            <!--主要布局-->
+            <!--  主要布局  -->
             <Grid x:Name="GridLayout">
                 <Grid.Effect>
-                    <DropShadowEffect Color="Black" Direction="0" ShadowDepth="0" Opacity="0.25" BlurRadius="5"/>
+                    <DropShadowEffect
+                        BlurRadius="5"
+                        Direction="0"
+                        Opacity="0.25"
+                        ShadowDepth="0"
+                        Color="Black" />
                 </Grid.Effect>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
 
 
-                <!--侧边栏-->
-                <Border CornerRadius="15" Margin="0,0,10,0">
+                <!--  侧边栏  -->
+                <Border Margin="0,0,10,0" CornerRadius="15">
                     <Border.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="{DynamicResource ColorMain1}"/>
-                            <GradientStop Color="{DynamicResource ColorMain2}" Offset="0.8"/>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="{DynamicResource ColorMain1}" />
+                            <GradientStop Offset="0.8" Color="{DynamicResource ColorMain2}" />
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock x:Name="TextBlockLogo" Text="IceYer" FontSize="30" Margin="0,35,0,20" FontFamily="Segoe Script" MouseDown="TextBlock_MouseDown" TextAlignment="Center" />
+                        <TextBlock
+                            x:Name="TextBlockLogo"
+                            Margin="0,35,0,20"
+                            FontFamily="Segoe Script"
+                            FontSize="30"
+                            MouseDown="TextBlock_MouseDown"
+                            Text="IceYer"
+                            TextAlignment="Center" />
 
-                        <Button x:Name="ButtonLauncher" Style="{DynamicResource ActivatedMenuButton}" Click="Button_Click_3">
+                        <Button
+                            x:Name="ButtonLauncher"
+                            Click="Button_Click_3"
+                            Style="{DynamicResource ActivatedMenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="solid_rocket" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="启动器" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="solid_rocket" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="启动器" />
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{DynamicResource MenuButton}" Click="Button_Click_4">
+                        <Button Click="Button_Click_4" Style="{DynamicResource MenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="Brands_Windows" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="系统配置" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="Brands_Windows" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="系统配置" />
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{DynamicResource MenuButton}" Click="Button_Click_5">
+                        <Button Click="Button_Click_5" Style="{DynamicResource MenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="Solid_NetworkWired" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="网络配置" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="Solid_NetworkWired" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="网络配置" />
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{DynamicResource MenuButton}" Click="Button_Click_6">
+                        <Button Click="Button_Click_6" Style="{DynamicResource MenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="Solid_Link" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="链接配置" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="Solid_Link" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="链接配置" />
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{DynamicResource MenuButton}" Click="Button_Click_7">
+                        <Button Click="Button_Click_7" Style="{DynamicResource MenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="Solid_Infinity" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="其他配置" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="Solid_Infinity" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="其他配置" />
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{DynamicResource MenuButton}" Click="Button_Click_8">
+                        <Button Click="Button_Click_8" Style="{DynamicResource MenuButton}">
                             <StackPanel Orientation="Horizontal">
-                                <fa5:SvgAwesome Icon="Solid_Cog" Style="{DynamicResource MenuButtonIcon}"/>
-                                <TextBlock Text="软件设置" Style="{DynamicResource MenuButtonText}"/>
+                                <fa5:SvgAwesome Icon="Solid_Cog" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="软件设置" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
                 </Border>
 
-                <!--右侧内容-->
-                <Grid  Grid.Column="1" >
+                <!--  右侧内容  -->
+                <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="16"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="38"/>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="38" />
                     </Grid.RowDefinitions>
 
-                    <!--导航栏-->
-                    <Border CornerRadius="15"  MouseDown="Border_MouseDown_1" MouseLeftButtonDown="Border_MouseLeftButtonDown" Background="{DynamicResource ColorBrushTopBar}">
+
+
+                    <!--  导航栏  -->
+                    <Border
+                        Background="{DynamicResource ColorBrushTopBar}"
+                        CornerRadius="15"
+                        MouseDown="Border_MouseDown_1"
+                        MouseLeftButtonDown="Border_MouseLeftButtonDown">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
-                            <Label Content="WindowsDOC" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource ColorBrushMain1}" BorderBrush="{x:Null}" Background="{x:Null}" Margin="10,0,0,0"/>
 
-                            <!--控制钮-->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Height="36" >
-                                <Button  Click="Button_Click" Style="{DynamicResource ButtonStyle}" Width="30">
-                                    <fa5:SvgAwesome Icon="Regular_WindowMinimize"  Style="{DynamicResource ButtonIcon}"/>
+                            <!--  标题  -->
+                            <Label
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Content="WindowsDOC"
+                                FontSize="16"
+                                Foreground="{DynamicResource ColorBrushMain1}" />
+
+
+                            <!--  控制钮  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Height="36"
+                                Margin="0,0,5,0"
+                                Orientation="Horizontal">
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Save"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Solid_Save" Style="{DynamicResource ButtonIcon}" />
                                 </Button>
-                                <Button Click="Button_Click_1"  Style="{DynamicResource ButtonStyle}" Width="30">
-                                    <fa5:SvgAwesome x:Name="SvgAwesomeMaximize" Icon="Regular_WindowMaximize"  Style="{DynamicResource ButtonIcon}"/>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Refresh"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Solid_Sync" Style="{DynamicResource ButtonIcon}" />
                                 </Button>
-                                <Button Click="Button_Click_2" Style="{DynamicResource ButtonStyle}" Width="30">
-                                    <fa5:SvgAwesome Icon="Regular_WindowClose"  Style="{DynamicResource ButtonIcon}"/>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Minimize"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Regular_WindowMinimize" Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Maximize"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome
+                                        x:Name="SvgAwesomeMaximize"
+                                        Icon="Regular_WindowMaximize"
+                                        Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Close"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Regular_WindowClose" Style="{DynamicResource ButtonIcon}" />
                                 </Button>
                             </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!--分隔条-->
-                    <Border CornerRadius="5" Grid.Row="1" Margin="0,5,0,5">
+                    <!--  分隔条  -->
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,5,0,5"
+                        CornerRadius="5">
                         <Border.Background>
                             <LinearGradientBrush>
-                                <GradientStop Color="{DynamicResource ColorMain1}" Offset="0" />
-                                <GradientStop Color="{DynamicResource ColorMain2}" Offset="0.8" />
+                                <GradientStop Offset="0" Color="{DynamicResource ColorMain1}" />
+                                <GradientStop Offset="0.8" Color="{DynamicResource ColorMain2}" />
                             </LinearGradientBrush>
                         </Border.Background>
                     </Border>
 
-                    <!--引用其他窗口-->
-                    <Border Grid.Row="2" CornerRadius="15" Background="{DynamicResource ColorBrushMainFrame}" >
-                        <Frame x:Name="ActivationFrame" BorderBrush="{x:Null}" NavigationUIVisibility="Hidden" Margin="10" />
+                    <!--  通知队列  -->
+                    <StackPanel
+                        x:Name="StackPanelNotification"
+                        Grid.Row="2"
+                        Grid.RowSpan="1"
+                        Width="300"
+                        Margin="0,6,0,6"
+                        Panel.ZIndex="1" />
+
+                    <!--  引用其他窗口  -->
+                    <Border
+                        Grid.Row="2"
+                        Background="{DynamicResource ColorBrushMainFrame}"
+                        CornerRadius="15">
+                        <Frame
+                            x:Name="ActivationFrame"
+                            Margin="10"
+                            BorderBrush="{x:Null}"
+                            NavigationUIVisibility="Hidden" />
                     </Border>
 
-                    <!--底栏-->
-                    <Border Grid.Row="3" CornerRadius="15" Margin="0,5,0,0"  Background="{DynamicResource ColorBrushMain2}">
-                        <Grid VerticalAlignment="Center" Margin="10,0,10,0">
+                    <!--  底栏  -->
+                    <Border
+                        Grid.Row="3"
+                        Margin="0,5,0,0"
+                        Background="{DynamicResource ColorBrushMain2}"
+                        CornerRadius="15">
+                        <Grid Margin="10,0,10,0" VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="当前版本：1.0.0" HorizontalAlignment="Center"/>
-                            <TextBlock Text="最新版本：1.0.0" Grid.Column="1" HorizontalAlignment="Center"/>
-                            <TextBlock Text="整合实用的小工具 汪！" Grid.Column="2" HorizontalAlignment="Center"/>
+                            <TextBlock
+                                x:Name="TextBlockCurrentVersion"
+                                HorizontalAlignment="Center"
+                                Text="当前版本：0.0.0.0" />
+                            <TextBlock
+                                x:Name="TextBlockInstalledVersion"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"
+                                Text="检查更新" />
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                Text="整合实用的小工具 汪！" />
                         </Grid>
                     </Border>
                 </Grid>

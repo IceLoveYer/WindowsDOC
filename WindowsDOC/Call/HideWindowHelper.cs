@@ -13,20 +13,22 @@ namespace WindowsDOC
         private readonly Timer _timer;
         private readonly List<HideCore> _hideLogicList = new();
 
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool GetCursorPos(out Point pt);
-
-        private struct Point
+        // 获取鼠标全局位置
+        public static class CursorHelper
         {
-            public int X;
-            public int Y;
+            [DllImport("user32.dll")]
+            private static extern bool GetCursorPos(out POINT lpPoint);
 
-            // ReSharper disable once UnusedMember.Local
-            public Point(int x, int y)
+            private struct POINT
             {
-                this.X = x;
-                this.Y = y;
+                public int X;
+                public int Y;
+            }
+
+            public static Point GetCursorPosition()
+            {
+                GetCursorPos(out POINT p);
+                return new Point(p.X, p.Y);
             }
         }
 
@@ -55,12 +57,14 @@ namespace WindowsDOC
         {
             if (_isInAnimation) return;
             if (_window.IsActive) return;
-            GetCursorPos(out var point); //获取鼠标相对桌面的位置
-            var isMouseEnter = point.X >= _window.Left
-                               && point.X <= _window.Left + _window.Width + 30
-                               && point.Y >= _window.Top
-                               && point.Y <= _window.Top
-                               + _window.Height + 30;
+
+            Point cursorPosition = CursorHelper.GetCursorPosition(); //获取鼠标相对桌面的位置
+            var isMouseEnter = cursorPosition.X >= _window.Left
+                   && cursorPosition.X <= _window.Left + _window.Width + 30
+                   && cursorPosition.Y >= _window.Top
+                   && cursorPosition.Y <= _window.Top
+                   + _window.Height + 30;
+
             //鼠标在里面
             if (isMouseEnter)
             {

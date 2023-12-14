@@ -2,16 +2,22 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <PackageProjectUrl>www.iceyer.cn</PackageProjectUrl>
+    <PackageProjectUrl></PackageProjectUrl>
     <Company>IceYer</Company>
     <Authors>氷</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseWindowsForms>False</UseWindowsForms>
-    <ApplicationIcon>WindowsDOC.ico</ApplicationIcon>
-    <Copyright>IceYer原创发布</Copyright>
+    <ApplicationIcon>Image\WindowsDOC.ico</ApplicationIcon>
+    <Copyright>IceYer原创发布（QQ：1750310791）</Copyright>
+    <StartupObject></StartupObject>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion></FileVersion>
+    <Version>$(VersionPrefix)</Version>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,20 +30,51 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="WindowsDOC.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Remove="WindowsDOC.ico" />
+    <None Remove="WindowsDOC.png" />
+    <None Remove="WindowsDOC_Start.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Image\WindowsDOC_Start.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Image\WindowsDOC.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.8.4" />
+    <PackageReference Include="Costura.Fody" Version="5.8.0-alpha0098">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
-    <PackageReference Include="System.Management" Version="8.0.0-rc.2.23479.6" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="bin\Debug\net7.0-windows\Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Image\WindowsDOC_Install.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

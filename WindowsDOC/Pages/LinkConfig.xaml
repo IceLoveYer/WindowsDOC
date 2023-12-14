@@ -1,12 +1,12 @@
 ﻿<Page
-    x:Class="WindowsDOC.Pages.SystemConfig"
+    x:Class="WindowsDOC.Pages.LinkConfig"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:local="clr-namespace:WindowsDOC"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="SystemConfig"
+    Title="LinkConfig"
     d:DesignHeight="428"
     d:DesignWidth="558"
     Foreground="{DynamicResource ColorBrushMain2}"
@@ -31,62 +31,24 @@
         </Style>
     </Page.Resources>
 
-    <Grid x:Name="GridLayout">
+
+    <Grid>
         <!--  定义布局  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
 
         <TextBlock
             VerticalAlignment="Center"
             Foreground="{DynamicResource ColorBrushMain2}"
-            Text="电脑概览"
+            Text="路径概览"
             TextAlignment="Center" />
 
-        <!--  占用率  -->
-        <ListView
-            x:Name="ListViewUsage"
-            Grid.Row="1"
-            d:ItemsSource="{d:SampleData ItemCount=3}"
-            Background="{x:Null}"
-            BorderBrush="{x:Null}"
-            Foreground="{DynamicResource ColorBrushMain2}"
-            ItemContainerStyle="{DynamicResource ListViewItemStyle}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SelectionMode="Single">
-            <!--  定义滚动条  -->
-            <ListView.Resources>
-                <Style BasedOn="{StaticResource ScrollBarStyle}" TargetType="ScrollBar" />
-            </ListView.Resources>
-            <!--  内嵌布局  -->
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel HorizontalAlignment="Center" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <!--  模板组成  -->
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:SphericalProgressControl
-                        Width="80"
-                        Height="80"
-                        BackgroundColor="{DynamicResource ColorBrushMain1}"
-                        BorderColor="{DynamicResource ColorBrushMain2}"
-                        Progress="{Binding Progress}"
-                        ProgressColor="{DynamicResource ColorBrushMain2}"
-                        ProgressText="{Binding ProgressText}"
-                        ProgressTextColor="{DynamicResource ColorBrushMain3}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <!--  项目  -->
         <ListView
             x:Name="ListViewItems"
-            Grid.Row="2"
+            Grid.Row="1"
             d:ItemsSource="{d:SampleData ItemCount=10}"
             Background="{x:Null}"
             BorderBrush="{x:Null}"
@@ -113,6 +75,7 @@
                             <ColumnDefinition Width="32" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
                         </Grid.ColumnDefinitions>
 
                         <fa5:SvgAwesome
@@ -133,9 +96,17 @@
                             Style="{StaticResource TextBoxStyle}"
                             Text="{Binding Value}"
                             TextWrapping="Wrap" />
+                        <Button
+                            Grid.Column="3"
+                            Click="ButtonFolderProperties_Click"
+                            Content="属性"
+                            Style="{DynamicResource ButtonStyle}" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
     </Grid>
+
+
+
 </Page>

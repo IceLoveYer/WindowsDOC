@@ -28,6 +28,9 @@ namespace WindowsDOC.Pages
 
             InitializeComponent();
 
+            // 添加颜色预设
+            AddPresetColors();
+
             // 读取数据
             ReadData();
         }
@@ -35,36 +38,31 @@ namespace WindowsDOC.Pages
         // 颜色选择器改变，更新颜色
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            // 检查 e.NewValue 是否为空
-            if (!e.NewValue.HasValue)
+            if (sender is Xceed.Wpf.Toolkit.ColorPicker colorPicker)
             {
-                return;  // 如果为空，则直接返回
-            }
+                // 检查 e.NewValue 是否为空
+                if (!e.NewValue.HasValue) return;
 
-            // 获取新选择的颜色
-            Color NewColor = e.NewValue.Value;
-            // 创建一个新的 SolidColorBrush 实例
-            SolidColorBrush NewBrush = new(NewColor);
+                // 获取新选择的颜色
+                Color newColor = e.NewValue.Value;
+                SolidColorBrush newBrush = new(newColor);
 
-            // 获取当前的 Application 对象并访问其 Resources 字典
-            ResourceDictionary appResources = Application.Current.Resources;
+                // 获取应用程序资源字典
+                ResourceDictionary appResources = Application.Current.Resources;
 
-            if (sender is Xceed.Wpf.Toolkit.ColorPicker ColorPicker)
-            {
                 // 获取当前选择器名称
-                string ResourceName = ColorPicker.Name;
-                if (ResourceName.StartsWith("ColorPicker"))
+                string resourceName = colorPicker.Name;
+                if (resourceName.StartsWith("ColorPicker"))
                 {
-                    ResourceName = ResourceName["ColorPicker".Length..];
-
-                    // 确认存在于字典中
-                    if (appResources.Contains(ResourceName))
+                    resourceName = resourceName["ColorPicker".Length..];
+                    // 确认资源存在
+                    if (appResources.Contains(resourceName))
                     {
                         // 判断前缀是否为ColorBrush，否则为Color
-                        ResourceName = ResourceName[(ResourceName.StartsWith("ColorBrush") ? "ColorBrush" : "Color").Length..];
+                        resourceName = resourceName[(resourceName.StartsWith("ColorBrush") ? "ColorBrush" : "Color").Length..];
 
-                        appResources["Color" + ResourceName] = NewColor;
-                        appResources["ColorBrush" + ResourceName] = NewBrush;
+                        appResources["Color" + resourceName] = newColor;
+                        appResources["ColorBrush" + resourceName] = newBrush;
                     }
                 }
             }
@@ -113,22 +111,92 @@ namespace WindowsDOC.Pages
                 var wrappedResources = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(JsonData);
 
                 // 确保解析成功并且包含"Colors"键
-                if (wrappedResources != null && wrappedResources.TryGetValue("Colors", out Dictionary<string, string>? value))
+                if (wrappedResources != null && wrappedResources.TryGetValue("Colors", out Dictionary<string, string>? colorResources))
                 {
-                    Dictionary<string, string> colorResources = value;
-
-                    // 获取当前的 Application 对象并访问其 Resources 字典
-                    ResourceDictionary appResources = Application.Current.Resources;
-
-                    // 将颜色资源加载回资源字典
-                    foreach (var item in colorResources)
+                    // 创建一个映射，将颜色控件的名称映射到相应的ColorPickerControl实例
+                    var colorPickers = new Dictionary<string, Xceed.Wpf.Toolkit.ColorPicker>
                     {
-                        Color NewColor = (Color)ColorConverter.ConvertFromString(item.Value);
-                        appResources[item.Key] = NewColor;
-                        SolidColorBrush NewBrush = new(NewColor);
-                        appResources["ColorBrush" + item.Key["Color".Length..]] = NewBrush;
+                        { "ColorMain1", ColorPickerColorMain1 },
+                        { "ColorMain2", ColorPickerColorMain2 },
+                        { "ColorMain3", ColorPickerColorMain3 },
+                        { "ColorBackground", ColorPickerColorBackground },
+                        { "ColorBackgroundBorder", ColorPickerColorBackgroundBorder },
+                        { "ColorSidebarButton", ColorPickerColorSidebarButton },
+                        { "ColorTopBar", ColorPickerColorTopBar },
+                        { "ColorMainFrame", ColorPickerColorMainFrame }
+                    };
+
+                    // 遍历颜色资源并更新对应的ColorPickerControl
+                    foreach (var colorResource in colorResources)
+                    {
+                        if (colorPickers.TryGetValue(colorResource.Key, out var colorPicker))
+                        {
+                            colorPicker.SelectedColor = (Color)ColorConverter.ConvertFromString(colorResource.Value);
+                        }
                     }
                 }
+            }
+        }
+
+
+
+        // 定义预设颜色类型
+        public class ColorPreset
+        {
+            public string Name { get; set; }
+            public Color ColorMain1 { get; set; }
+            public Color ColorMain2 { get; set; }
+            public Color ColorMain3 { get; set; }
+            public Color ColorBackground { get; set; }
+            public Color ColorBackgroundBorder { get; set; }
+            public Color ColorSidebarButton { get; set; }
+            public Color ColorTopBar { get; set; }
+            public Color ColorMainFrame { get; set; }
+
+            public ColorPreset(string name, string colorMain1, string colorMain2, string colorMain3, string colorBackground, string colorBackgroundBorder, string colorSidebarButton, string colorTopBar, string colorMainFrame)
+            {
+                Name = name;
+                ColorMain1 = (Color)ColorConverter.ConvertFromString(colorMain1);
+                ColorMain2 = (Color)ColorConverter.ConvertFromString(colorMain2);
+                ColorMain3 = (Color)ColorConverter.ConvertFromString(colorMain3);
+                ColorBackground = (Color)ColorConverter.ConvertFromString(colorBackground);
+                ColorBackgroundBorder = (Color)ColorConverter.ConvertFromString(colorBackgroundBorder);
+                ColorSidebarButton = (Color)ColorConverter.ConvertFromString(colorSidebarButton);
+                ColorTopBar = (Color)ColorConverter.ConvertFromString(colorTopBar);
+                ColorMainFrame = (Color)ColorConverter.ConvertFromString(colorMainFrame);
+            }
+        }
+
+        // 添加预设颜色
+        private void AddPresetColors()
+        {
+            var presets = new List<ColorPreset>
+            {
+                new ("蓝紫","#F00ECDF0","#F0D453EE","#FFFFFFFF","#FFFFFFFF","#FFCACACA","Transparent","#FFFFFFFF","#FFFFFFFF"),
+                new ("夏末","#FFF0F8FF","#FF00FFFF","#FF000000","#FF000000","#FFCACACA","Transparent","Transparent","Transparent"),
+            };
+
+            ComboBoxPresetColors.ItemsSource = presets;
+        }
+
+        // 更新预设颜色
+        private void ComboBoxPresetColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBoxPresetColors.SelectedItem is ColorPreset selectedPreset)
+            {
+                ColorPickerColorMain1.SelectedColor = selectedPreset.ColorMain1;
+                ColorPickerColorMain2.SelectedColor = selectedPreset.ColorMain2;
+                ColorPickerColorMain3.SelectedColor = selectedPreset.ColorMain3;
+                ColorPickerColorBackground.SelectedColor = selectedPreset.ColorBackground;
+                ColorPickerColorBackgroundBorder.SelectedColor = selectedPreset.ColorBackgroundBorder;
+                ColorPickerColorSidebarButton.SelectedColor = selectedPreset.ColorSidebarButton;
+                ColorPickerColorTopBar.SelectedColor = selectedPreset.ColorTopBar;
+                ColorPickerColorMainFrame.SelectedColor = selectedPreset.ColorMainFrame;
+
+                // 重置 ComboBox 选中项
+                ComboBoxPresetColors.SelectedItem = null;
+
+                NotificationControl.Add("呀，这难道是传说中的主题？", 2);
             }
         }
     }

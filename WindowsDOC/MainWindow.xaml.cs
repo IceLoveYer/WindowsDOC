@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using AutoUpdaterDotNET;
+using System;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -13,6 +16,8 @@ namespace WindowsDOC
         Button ActivtionButton = new();
         readonly Pages.Launcher Launcher = new();
         readonly Pages.SystemConfig SystemConfig = new();
+        readonly Pages.NetworkConfig NetworkConfig = new();
+        readonly Pages.LinkConfig LinkConfig = new();
         readonly Pages.Setting Setting = new();
 
         // 贴边隐藏
@@ -21,6 +26,7 @@ namespace WindowsDOC
         public MainWindow()
         {
             InitializeComponent();
+
 
             // 设置窗口最大尺寸为屏幕工作区尺寸，最大化时显示任务栏
             this.MaxHeight = SystemParameters.WorkArea.Size.Height;
@@ -37,17 +43,40 @@ namespace WindowsDOC
                 .AddHider<HideOnRight>()
                 .AddHider<HideOnTop>()
                 .Start();
+
+            // 通知队列初始化
+            NotificationControl.SetNotificationPanel(StackPanelNotification);
+
+            // 获取当前版本号
+            TextBlockCurrentVersion.Text = "当前版本：" + Assembly.GetExecutingAssembly().GetName().Version?.ToString();
         }
 
 
 
         // 窗口控制钮
-        private void Button_Click(object sender, RoutedEventArgs e) // 最小化
+        private void Button_Click_Save(object sender, RoutedEventArgs e) // 保存
+        {
+            Launcher.SaveData();
+            Setting.SaveData();
+
+            NotificationControl.Add("保存成功！");
+        }
+        private void Button_Click_Refresh(object sender, RoutedEventArgs e) // 刷新
+        {
+            if (ActivationFrame.Content is Page currentPage)
+            {
+                Type currentPageType = currentPage.GetType();
+                ActivationFrame.Navigate(Activator.CreateInstance(currentPageType));
+
+                NotificationControl.Add("刷新成功！");
+            }
+        }
+        private void Button_Click_Minimize(object sender, RoutedEventArgs e) // 最小化
         {
             WindowState = WindowState.Minimized;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e) // 放大还原
+        private void Button_Click_Maximize(object sender, RoutedEventArgs e) // 放大还原
         {
             ToggleWindowState();
         }
@@ -65,11 +94,10 @@ namespace WindowsDOC
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e) // 关闭
+        private void Button_Click_Close(object sender, RoutedEventArgs e) // 关闭
         {
             // 保存
-            Launcher.SaveData();
-            Setting.SaveData();
+            Button_Click_Save(sender, e);
 
             // 强制退出，WPF不要用Close
             Application.Current.Shutdown();
@@ -176,14 +204,19 @@ namespace WindowsDOC
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
+            SwitchPages(sender, NetworkConfig);
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
+            SwitchPages(sender, LinkConfig);
         }
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
+            NotificationControl.Add("这个暂时不知道写啥呢，别点了~");
+
+
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
@@ -240,6 +273,11 @@ namespace WindowsDOC
             TextBlockLogo.FontSize = TextBlockLogo.FontSize == 30 ? 20 : 30;
         }
 
+        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // 设置 AutoUpdater.NET
+            AutoUpdater.Start("http://update.iceyer.cn/WindowsDOC/Update.xml");
+        }
 
     }
 }

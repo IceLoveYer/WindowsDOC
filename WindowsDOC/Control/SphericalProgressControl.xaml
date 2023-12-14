@@ -1,0 +1,73 @@
+﻿<UserControl
+    x:Class="WindowsDOC.SphericalProgressControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WindowsDOC"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="UCSPC"
+    mc:Ignorable="d">
+    <!--  用户控件的根布局  -->
+    <Grid>
+        <!--  Viewbox 用于确保子元素能适应不同大小  -->
+        <Viewbox Width="100">
+            <!--  主要的布局网格  -->
+            <Grid Width="100">
+                <!--  用椭圆几何形状作为剪切区域，形成圆形边界  -->
+                <Grid.Clip>
+                    <EllipseGeometry
+                        Center="50 50"
+                        RadiusX="50"
+                        RadiusY="50" />
+                </Grid.Clip>
+
+                <!--  圆形边框+背景色  -->
+                <Ellipse
+                    Width="100"
+                    Height="100"
+                    Fill="{Binding BackgroundColor, ElementName=UCSPC, FallbackValue='White'}"
+                    Stroke="{Binding BorderColor, ElementName=UCSPC, FallbackValue='Black'}"
+                    StrokeThickness="1" />
+
+                <!--  旋转圆角矩形，用于显示进度动画  -->
+                <Border
+                    Width="220"
+                    Height="220"
+                    Margin="-100"
+                    Background="{Binding ProgressColor, ElementName=UCSPC, FallbackValue='Black'}"
+                    CornerRadius="90"
+                    RenderTransformOrigin="0.5 0.5">
+                    <!--  为边框添加旋转和位移变换  -->
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="0" />
+                            <TranslateTransform x:Name="TranslateTransformProgress" Y="{Binding Progress, ElementName=UCSPC, FallbackValue='160'}" />
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                    <!--  动画触发器，使边框在加载时旋转  -->
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="Forever">
+                                    <!--  旋转动画，使边框连续旋转  -->
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Children[0].Angle"
+                                        To="359"
+                                        Duration="0:0:10" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+
+                <!--  显示文本  -->
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{Binding ProgressTextColor, ElementName=UCSPC, FallbackValue='Blue'}"
+                    Text="{Binding ProgressText, ElementName=UCSPC, FallbackValue='Loading...'}"
+                    TextWrapping="Wrap" />
+            </Grid>
+        </Viewbox>
+    </Grid>
+</UserControl>

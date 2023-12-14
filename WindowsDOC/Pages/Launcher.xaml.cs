@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -10,8 +11,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using WindowsDOC.Call;
 
 namespace WindowsDOC.Pages
 {
@@ -26,6 +29,7 @@ namespace WindowsDOC.Pages
         private Window Thumbnail = new(); // 缩略图窗口
 
         private ObservableCollection<MyItemGroup> ItemsGroups = new(); // 这里用ObservableCollection会自动刷新界面
+        private readonly ElevatedFileDroper FileDroper = new(); // 拖放窗口
 
 
         public Launcher()
@@ -40,6 +44,7 @@ namespace WindowsDOC.Pages
 
             InitializeComponent();
 
+
             // 读取数据
             ReadData();
 
@@ -52,16 +57,14 @@ namespace WindowsDOC.Pages
 
 
 
-        // 定义分组类型
-        private class MyItemGroup
+        private class MyItemGroup // 定义分组类型
         {
             public BitmapSource? Image { get; set; } // 图像
             public string ImagePath { get; set; } = ""; // 图像文件路径
             public string Text { get; set; } = ""; // 标题
             public ObservableCollection<MyItem> Items { get; set; } = new();// 项目
         }
-        // 定义项目类型
-        private class MyItem
+        private class MyItem // 定义项目类型
         {
             public BitmapSource? Image { get; set; } // 图像
             public string ImagePath { get; set; } = ""; // 图像文件路径
@@ -82,8 +85,8 @@ namespace WindowsDOC.Pages
             Relative // 相对
         }
 
-        // 选择分组，加载对应项目
-        private void ListViewGroups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void ListViewGroups_SelectionChanged(object sender, SelectionChangedEventArgs e) // 选择分组，加载对应项目
         {
             // 根据分组显示选项
             if (ListViewGroups.SelectedIndex >= 0 && ListViewGroups.SelectedIndex < ItemsGroups.Count)
@@ -97,8 +100,28 @@ namespace WindowsDOC.Pages
         }
 
 
-        // 展开收缩分组
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void TextBoxSearch_TextChanged(object sender, TextChangedEventArgs e) // 搜索分组中的项目
+        {
+            if (ItemsGroups.Count != 0)
+            {
+                string searchText = TextBoxSearch.Text.ToLower(); // 获取搜索文本并转换为小写以进行不区分大小写的搜索
+
+                // 选择当前分组中的项目
+                var items = ItemsGroups[ListViewGroups.SelectedIndex].Items;
+
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    // 过滤项目：找到包含搜索文本的项目
+                    items = new ObservableCollection<MyItem>(items.Where(item => item.Text.ToLower().Contains(searchText)));
+                }
+
+                // 设置数据源
+                ListViewItems.ItemsSource = items;
+            }
+        }
+
+
+        private void Button_Click(object sender, RoutedEventArgs e) // 展开收缩分组
         {
             if (GridLayout.RowDefinitions[0].Height == GridLength.Auto)
             {
@@ -113,166 +136,76 @@ namespace WindowsDOC.Pages
                 SvgAwesomeDraw.Icon = FontAwesome5.EFontAwesomeIcon.Solid_ChevronUp;
             }
         }
-
-
-        // 展开收缩编辑区域
-        private void DisplayEdit(bool Display, bool Groups, bool? Add = null)
+        private void DisplayEdit(bool Display, bool Groups) // 展开收缩编辑区域
         {
-            if (Display) // 是否显示 编辑部分
+            if (Groups)
             {
-                // 编辑情况下，索引为空直接返回
-                if (Groups)
-                {
-                    if (Add != null && !(bool)Add)
-                    {
-                        if (ListViewGroups.SelectedIndex == -1) // 分组为空
-                        {
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    if (ListViewGroups.SelectedIndex == -1) // 分组为空
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        if (Add != null && !(bool)Add)
-                        {
-                            if (ListViewItems.SelectedIndex == -1) // 项目为空
-                            {
-                                return;
-                            }
-                        }
-                    }
-                }
+                GridLayout.RowDefinitions[1].Height = new(Display ? 30 : 0); // 分组
 
-                if (Groups) // 是否分组（或项目）
-                {
-                    GridLayout.RowDefinitions[2].Height = new(30); // 显示 分组 编辑部分
-
-                    //GridLayout.RowDefinitions[4].Height = new GridLength(0); // 项目内容隐藏，因为分组不需要内容
-
-                    if (Add != null)
-                    {
-                        if ((bool)Add) // 是否添加（或编辑）
-                        {
-                            TextBlockGroup.Text = "添加分组";
-                            TextBoxGroup.Text = "";
-                            ImageGroup.Source = null;
-                        }
-                        else
-                        {
-                            TextBlockGroup.Text = "编辑分组";
-                            TextBoxGroup.Text = ItemsGroups[ListViewGroups.SelectedIndex].Text;
-                            ImageGroup.Source = ItemsGroups[ListViewGroups.SelectedIndex].Image ?? null;
-                        }
-                    }
-                }
-                else
-                {
-                    GridLayout.RowDefinitions[4].Height = new(130); // 显示 项目 编辑部分
-
-                    if (Add != null)
-                    {
-                        if ((bool)Add)
-                        {
-                            TextBlockItem.Text = "添加项目";
-                            TextBoxItem.Text = "";
-                            ImageItem.Source = null;
-
-                            RadioButtonPath.IsChecked = true;
-                            RadioButtoAbsolutePath.IsChecked = true;
-                            TextBoxEditContent.Text = "";
-                        }
-                        else
-                        {
-                            TextBlockItem.Text = "编辑项目";
-
-                            MyItem TempMyItem = (MyItem)ListViewItems.Items[ListViewItems.SelectedIndex]; // 获取当前项目数据
-
-                            TextBoxItem.Text = TempMyItem.Text;
-                            ImageItem.Source = TempMyItem.Image ?? null;
-
-                            if (TempMyItem.ItemType == MyItemType.Path)
-                            {
-                                RadioButtonPath.IsChecked = true;
-
-                                if (TempMyItem.ItemPathType == MyItemPathType.Absolute)
-                                {
-                                    RadioButtoAbsolutePath.IsChecked = true;
-                                }
-                                else
-                                {
-                                    RadioButtonRelativePath.IsChecked = true;
-                                }
-                            }
-                            else
-                            {
-                                RadioButtonCommand.IsChecked = true;
-                            }
-                            TextBoxEditContent.Text = TempMyItem.Content;
-                        }
-                    }
-                }
+                GridLayout.RowDefinitions[2].Height = new(Display ? 0 : 30); // 搜索
             }
             else
             {
-                if (Groups) // 是否分组（或项目）
-                {
-                    GridLayout.RowDefinitions[2].Height = new GridLength(0);
-                }
-                else
-                {
-                    GridLayout.RowDefinitions[4].Height = new GridLength(0);
-                }
+                GridLayout.RowDefinitions[4].Height = new(Display ? 130 : 0);  // 项目
             }
         }
 
 
-        // 更换图标
-        private void ButtonGroupImage_Click(object sender, RoutedEventArgs e)
+
+        private void ButtonGroupImage_Click(object sender, RoutedEventArgs e) // 更换图标
         {
             ChangeImage(ImageGroup);
         }
-
         private void ButtonItemImage_Click(object sender, RoutedEventArgs e)
         {
             ChangeImage(ImageItem);
         }
-
         private static void ChangeImage(Image TempImage)
         {
             OpenFileDialog openFileDialog = new()
             {
-                Title = "选择图片",
-                Filter = "图片文件 (*.jpg, *.png, *.ico, *.bmp, *.gif)|*.jpg;*.png;*.ico;*.bmp;*.gif"
+                Title = "选择图片或者从应用程序中提取",
+                Filter = "所有文件 (*.*)|*.*"
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string selectedImagePath = openFileDialog.FileName;
+                string selectedFilePath = openFileDialog.FileName;
 
-                // 创建 BitmapImage 并设置源
-                BitmapImage TempBitmapImage = new();
-                TempBitmapImage.BeginInit();
-                TempBitmapImage.UriSource = new Uri(selectedImagePath);
-                TempBitmapImage.EndInit();
+                try
+                {
+                    var imageExtensions = new[] { ".jpg", ".png", ".ico", ".bmp", ".gif" };
+                    if (imageExtensions.Any(ext => selectedFilePath.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        // 创建 BitmapImage 并设置源
+                        BitmapImage tempBitmapImage = new();
+                        tempBitmapImage.BeginInit();
+                        tempBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                        tempBitmapImage.UriSource = new Uri(selectedFilePath, UriKind.Absolute);
+                        tempBitmapImage.EndInit();
 
-                // 将 BitmapImage 设置为图像控件的源
-                TempImage.Source = TempBitmapImage;
+                        // 将 BitmapImage 设置为图像控件的源
+                        TempImage.Source = tempBitmapImage;
+                    }
+                    else
+                    {
+                        // 对于其他文件类型，获取并显示图标
+                        TempImage.Source = ResourceIcon.GetIconWpfJumbo(selectedFilePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    NotificationControl.Add("ChangeImage：" + ex.Message);
+                }
             }
         }
 
 
-        // 确定添加或编辑
-        private void ButtonGroupOk_Click(object sender, RoutedEventArgs e)
+
+        private void ButtonGroupOk_Click(object sender, RoutedEventArgs e) // 确定添加或编辑
         {
             ButtonOk(TextBlockGroup.Text);
         }
-
         private void ButtonItemOk_Click(object sender, RoutedEventArgs e)
         {
             ButtonOk(TextBlockItem.Text);
@@ -319,7 +252,7 @@ namespace WindowsDOC.Pages
                 }
                 else if (Category.Contains("编辑"))
                 {
-                    MyItem TempMyItem = (MyItem)ListViewItems.Items[ListViewItems.SelectedIndex];
+                    MyItem TempMyItem = ItemsGroups[ListViewGroups.SelectedIndex].Items[ListViewItems.SelectedIndex]; // 获取当前项目数据
 
                     TempMyItem.Text = TextBoxItem.Text;
                     TempMyItem.Image = (BitmapSource)ImageItem.Source;
@@ -336,12 +269,10 @@ namespace WindowsDOC.Pages
             }
         }
 
-        // 取消
-        private void ButtonGroupCancel_Click(object sender, RoutedEventArgs e)
+        private void ButtonGroupCancel_Click(object sender, RoutedEventArgs e) // 取消添加或编辑
         {
             DisplayEdit(false, true);
         }
-
         private void ButtonItemCancel_Click(object sender, RoutedEventArgs e)
         {
             DisplayEdit(false, false);
@@ -349,32 +280,63 @@ namespace WindowsDOC.Pages
 
 
 
-        // 添加分组
-        private void MenuItem_AddGroups_Click(object sender, RoutedEventArgs e)
+        private void ButtonItemImportFile_Click(object sender, RoutedEventArgs e) // 选择文件
         {
-            DisplayEdit(true, true, true);
-        }
-        // 编辑分组
-        private void MenuItem_EditGroups_Click(object sender, RoutedEventArgs e)
-        {
-            DisplayEdit(true, true, false);
-        }
-        // 删除分组
-        private void MenuItem_DeleteGroups_Click(object sender, RoutedEventArgs e)
-        {
-            if (ItemsGroups.Count == 0) // 检查集合是否为空
+            OpenFileDialog openFileDialog = new()
             {
-                MessageBox.Show("没有可删除的分组。");
-            }
+                Title = "选择一个文件",
+                Filter = "所有文件 (*.*)|*.*"
+            };
 
-            if (ListViewGroups.SelectedIndex >= 0 && ListViewGroups.SelectedIndex < ItemsGroups.Count) // 确保索引有效
+            if (openFileDialog.ShowDialog() == true)
             {
-                ItemsGroups.RemoveAt(ListViewGroups.SelectedIndex);
+                // 只取第一个文件或目录
+                ParsingFiles(openFileDialog.FileName);
             }
-            else
+        }
+        private void ButtonItemImportFolder_Click(object sender, RoutedEventArgs e) // 选择文件夹
+        {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new()
             {
-                MessageBox.Show("选中的索引无效。");
+                Description = "选择一个文件夹"
+            };
+
+            // 显示对话框
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // 获取选择的文件夹路径
+                ParsingFiles(folderBrowserDialog.SelectedPath);
             }
+        }
+
+
+        private void ContextMenuGroup_Opened(object sender, RoutedEventArgs e) // 设置分组菜单项状态
+        {
+            if (ItemsGroups.Count == 0) // 检查分组为空
+            {
+                MenuItem_EditGroup.IsEnabled = false;
+                MenuItem_DeleteGroup.IsEnabled = false;
+            }
+        }
+        private void MenuItem_AddGroup_Click(object sender, RoutedEventArgs e) // 添加分组
+        {
+            TextBlockGroup.Text = "添加分组";
+            TextBoxGroup.Text = "";
+            ImageGroup.Source = null;
+
+            DisplayEdit(true, true);
+        }
+        private void MenuItem_EditGroup_Click(object sender, RoutedEventArgs e) // 编辑分组
+        {
+            TextBlockGroup.Text = "编辑分组";
+            TextBoxGroup.Text = ItemsGroups[ListViewGroups.SelectedIndex].Text;
+            ImageGroup.Source = ItemsGroups[ListViewGroups.SelectedIndex].Image ?? null;
+
+            DisplayEdit(true, true);
+        }
+        private void MenuItem_DeleteGroup_Click(object sender, RoutedEventArgs e) // 删除分组
+        {
+            ItemsGroups.RemoveAt(ListViewGroups.SelectedIndex);
 
             DisplayEdit(false, true);
             DisplayEdit(false, false);
@@ -382,36 +344,79 @@ namespace WindowsDOC.Pages
 
 
 
-        // 添加项目
-        private void MenuItem_AddItem_Click(object sender, RoutedEventArgs e)
+        private void ContextMenuItem_Opened(object sender, RoutedEventArgs e) // 设置项目菜单项状态
         {
-            DisplayEdit(true, false, true);
-        }
-        // 编辑项目
-        private void MenuItem_EditItem_Click(object sender, RoutedEventArgs e)
-        {
-            DisplayEdit(true, false, false);
-        }
-        // 删除项目
-        private void MenuItem_DeleteItem_Click(object sender, RoutedEventArgs e)
-        {
-            var Items = ItemsGroups[ListViewGroups.SelectedIndex].Items;
-            if (ListViewItems.SelectedIndex == -1)
+            if (ItemsGroups.Count == 0) // 检查分组为空
             {
-                Items.RemoveAt(Items.Count - 1);
+                e.Handled = true; // 取消当前控件的上下文菜单打开
+                ListViewGroups.ContextMenu.IsOpen = true; // 打开分组菜单
             }
             else
             {
-                Items.RemoveAt(ListViewItems.SelectedIndex);
+                if (ItemsGroups[ListViewGroups.SelectedIndex].Items.Count == 0) // 检查项目为空
+                {
+                    MenuItem_EditItem.IsEnabled = false;
+                    MenuItem_DeleteItem.IsEnabled = false;
+                    MeunItem_MoveItem.IsEnabled = false;
+                }
+                else
+                {
+                    SetMobileItemGroups(); // 更新 移动项目 菜单项
+                }
             }
+        }
+        private void MenuItem_AddItem_Click(object sender, RoutedEventArgs e) // 添加项目
+        {
+            TextBlockItem.Text = "添加项目";
+            TextBoxItem.Text = "";
+            ImageItem.Source = null;
+
+            RadioButtonPath.IsChecked = true;
+            RadioButtoAbsolutePath.IsChecked = true;
+            TextBoxEditContent.Text = "";
+
+            DisplayEdit(true, false);
+        }
+        private void MenuItem_EditItem_Click(object sender, RoutedEventArgs e) // 编辑项目
+        {
+            TextBlockItem.Text = "编辑项目";
+
+            MyItem TempMyItem = ItemsGroups[ListViewGroups.SelectedIndex].Items[ListViewItems.SelectedIndex]; // 获取当前项目数据
+
+            TextBoxItem.Text = TempMyItem.Text;
+            ImageItem.Source = TempMyItem.Image ?? null;
+
+            if (TempMyItem.ItemType == MyItemType.Path)
+            {
+                RadioButtonPath.IsChecked = true;
+
+                if (TempMyItem.ItemPathType == MyItemPathType.Absolute)
+                {
+                    RadioButtoAbsolutePath.IsChecked = true;
+                }
+                else
+                {
+                    RadioButtonRelativePath.IsChecked = true;
+                }
+            }
+            else
+            {
+                RadioButtonCommand.IsChecked = true;
+            }
+            TextBoxEditContent.Text = TempMyItem.Content;
+
+            DisplayEdit(true, false);
+        }
+        private void MenuItem_DeleteItem_Click(object sender, RoutedEventArgs e) // 删除项目
+        {
+            ItemsGroups[ListViewGroups.SelectedIndex].Items.RemoveAt(ListViewItems.SelectedIndex);
 
             DisplayEdit(false, false);
         }
 
 
 
-        // 拖动项目判断
-        private async void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) // 拖动项目判断
         {
             //Console.WriteLine("Sender type: " + sender.GetType().ToString());
 
@@ -435,8 +440,7 @@ namespace WindowsDOC.Pages
                 }
             }
         }
-        // 判断是否为长按
-        private static async Task<bool> WaitForLongPressAsync(int milliseconds)
+        private static async Task<bool> WaitForLongPressAsync(int milliseconds) // 判断是否为长按
         {
             DateTime startTime = DateTime.Now;
             while (true)
@@ -454,8 +458,7 @@ namespace WindowsDOC.Pages
                 }
             }
         }
-        // 拖动项目置新位置
-        private void ListViewItem_PreviewDrop(object sender, DragEventArgs e)
+        private void ListViewItem_PreviewDrop(object sender, DragEventArgs e) // 拖动项目置新位置
         {
             //Console.WriteLine("Sender type: " + sender.GetType().ToString());
 
@@ -493,8 +496,8 @@ namespace WindowsDOC.Pages
                     TargetItem = VisualTreeHelper.GetParent(TargetItem);
                 }
 
-                Console.WriteLine(SourceIndex);
-                Console.WriteLine(TargetIndex);
+                //Console.WriteLine("来源：" + SourceIndex + " 目标：" + TargetIndex);
+
                 // 移动位置
                 if (SourceIndex != -1 && TargetIndex != -1 && SourceIndex != TargetIndex) // 不能等于-1，拖动前后位置不变
                 {
@@ -511,8 +514,75 @@ namespace WindowsDOC.Pages
         }
 
 
-        // 显示缩略图
-        private void ShowThumbnail(ListViewItem Item)
+
+        private void CheckBoxExternalDragDrop_Checked(object sender, RoutedEventArgs e)// 启用外部文件拖拽功能
+        {
+            // 启用拖拽功能
+            FileDroper.HwndSource = (HwndSource)PresentationSource.FromVisual(ListViewGroups);
+            FileDroper.AddHook();
+            FileDroper.DragDrop += (sender, e) =>
+            {
+                ParsingFiles(FileDroper.DropFilePaths[0]); // 只取第一个文件或目录进行解析
+            };
+        }
+        private void CheckBoxExternalDragDrop_Unchecked(object sender, RoutedEventArgs e)// 禁用外部文件拖拽功能
+        {
+            FileDroper.RemoveHook();
+        }
+        public void ParsingFiles(string FilePath) // 解析外部文件(夹)
+        {
+            if (ItemsGroups.Count == 0)
+            {
+                NotificationControl.Add("目前还有分组呢，先添加一分组吧~");
+            }
+            else
+            {
+                try
+                {
+                    TextBlockItem.Text = "添加项目";
+
+                    TextBoxItem.Text = System.IO.Path.GetFileName(FilePath); // 获取文件名或文件夹名
+
+                    RadioButtonPath.IsChecked = true; // 类型肯定是路径
+                    if (FilePath.StartsWith(Directory.GetCurrentDirectory())) // 如果路径包含了当前运行目录则为相对路径
+                    {
+                        RadioButtonRelativePath.IsChecked = true;
+                        TextBoxEditContent.Text = FilePath.Replace(Directory.GetCurrentDirectory(), "").TrimStart('\\');
+                    }
+                    else
+                    {
+                        RadioButtoAbsolutePath.IsChecked = true;
+                        TextBoxEditContent.Text = FilePath;
+                    }
+
+                    ImageItem.Source = ResourceIcon.GetIconWpfJumbo(FilePath); // 获取高清图标
+                }
+                catch (Exception ex)
+                {
+                    NotificationControl.Add("ParsingFiles：" + ex.Message);
+                }
+
+                DisplayEdit(true, false);
+            }
+        }
+
+
+        private void ListViewItems_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) // 点击空白处取消选中项
+        {
+            // 检查是否点击了ListView的项（item）
+            if (e.OriginalSource is FrameworkElement element && element.DataContext != null)
+            {
+                // 如果点击了项，则不执行任何操作
+                return;
+            }
+
+            // 如果点击的是空白处，则取消选中所有项
+            ListViewItems.SelectedItem = null;
+        }
+
+
+
+        private void ShowThumbnail(ListViewItem Item) // 显示缩略图
         {
             //取项目控件截图
             RenderTargetBitmap TempBitmap = new((int)Item.ActualWidth, (int)Item.ActualHeight, 96, 96, PixelFormats.Pbgra32);
@@ -554,84 +624,43 @@ namespace WindowsDOC.Pages
             Thumbnail.Show(); // 显示
             _ = MoveThumbnailAsync(); // 鼠标移动事件
         }
-        // 缩略图跟随鼠标位置
-        private async Task MoveThumbnailAsync()
+        private async Task MoveThumbnailAsync() // 缩略图跟随鼠标位置
         {
             while (Thumbnail.IsVisible)
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    if (GetCursorPos(out POINT p))
-                    {
-                        Thumbnail.Left = p.X + 5;
-                        Thumbnail.Top = p.Y + 15;
-                    }
+                    Point cursorPosition = CursorHelper.GetCursorPosition();
+                    Thumbnail.Left = cursorPosition.X + 5;
+                    Thumbnail.Top = cursorPosition.Y + 15;
                 });
 
                 await Task.Delay(10); // 等待一小段时间再更新位置
             }
         }
-        // 获取鼠标全局位置
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool GetCursorPos(out POINT lpPoint);
-        public struct POINT
+        public static class CursorHelper // 获取鼠标全局位置
         {
-            public int X;
-            public int Y;
-        }
+            [DllImport("user32.dll")]
+            private static extern bool GetCursorPos(out POINT lpPoint);
 
-
-        // 获取外部拖拽文件(夹)
-        private void ListViewItems_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            private struct POINT
             {
-                e.Effects = DragDropEffects.Copy;
+                public int X;
+                public int Y;
             }
-            else
+
+            public static Point GetCursorPosition()
             {
-                e.Effects = DragDropEffects.None;
-            }
-        }
-        // 解析外部拖拽文件(夹)
-        private void ListViewItems_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] Files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                if (Files.Length > 0)
-                {
-                    string TempFile = Files[0];  // 只取第一个文件或目录
-
-                    DisplayEdit(true, false, true); // 显示编辑区域
-
-                    TextBoxItem.Text = System.IO.Path.GetFileName(TempFile); // 获取文件名或文件夹名
-
-                    RadioButtonPath.IsChecked = true; // 类型肯定是路径
-                    if (TempFile.StartsWith(Directory.GetCurrentDirectory())) // 如果路径包含了当前运行目录则为相对路径
-                    {
-                        RadioButtonRelativePath.IsChecked = true;
-                    }
-                    else
-                    {
-                        RadioButtoAbsolutePath.IsChecked = true;
-                    }
-
-                    ImageItem.Source = IconExtractor.ExtractJumboIcon(TempFile); // 获取高清图标
-
-                    TextBoxEditContent.Text = TempFile; // 设置路径
-                }
+                GetCursorPos(out POINT p);
+                return new Point(p.X, p.Y);
             }
         }
 
 
-        // 项目右键菜单中 移动分组 与 ItemsGroups 绑定
-        private void ListViewItems_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+
+        private void SetMobileItemGroups()// 设置移动项目分组；绑定ItemsGroups
         {
-            var menuItem = MeunItemMoveGroups;
-            menuItem.Items.Clear(); // 清除现有的子菜单项
+            MeunItem_MoveItem.Items.Clear(); // 清除现有的子菜单项
 
             // 添加子菜单项
             foreach (var groupItem in ItemsGroups)
@@ -674,11 +703,10 @@ namespace WindowsDOC.Pages
                 subMenuItem.DataContext = groupItem;
                 subMenuItem.Click += MenuItem_MoveSubItem_Click;
 
-                menuItem.Items.Add(subMenuItem);
+                MeunItem_MoveItem.Items.Add(subMenuItem);
             }
         }
-        // 移动项目置新分组
-        private void MenuItem_MoveSubItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_MoveSubItem_Click(object sender, RoutedEventArgs e) // 移动项目置新分组
         {
             if (sender is MenuItem menuItem && menuItem.DataContext is MyItemGroup targetGroup)
             {
@@ -701,8 +729,8 @@ namespace WindowsDOC.Pages
         }
 
 
-        // 项目双击运行
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e) // 项目双击运行
         {
             // 区分项目 ListViewItems
             if (sender is ListViewItem Item && Item.Content is MyItem TempMyItem)
@@ -710,7 +738,7 @@ namespace WindowsDOC.Pages
                 if (TempMyItem.ItemType == MyItemType.Path)
                 {
                     string TempPath = TempMyItem.ItemPathType == MyItemPathType.Absolute ? TempMyItem.Content : Path.Combine(Directory.GetCurrentDirectory(), TempMyItem.Content);
-                    Process.Start(new ProcessStartInfo("cmd.exe", $"/c start \"\" \"{TempPath}\"") { WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = true, UseShellExecute = false });
+                    Process.Start(new ProcessStartInfo("cmd.exe", $"/c start \"\" \"{TempPath}\"") { WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = true, UseShellExecute = true });
                 }
                 else
                 {
@@ -721,8 +749,7 @@ namespace WindowsDOC.Pages
 
 
 
-        // 保存
-        public void SaveData()
+        public void SaveData() // 保存
         {
             // 重置数据目录
             if (Directory.Exists(DataDirectory))
@@ -783,8 +810,7 @@ namespace WindowsDOC.Pages
                 File.WriteAllText(JsonFilePath, JsonData, Encoding.UTF8);
             }
         }
-        // 保存图像文件
-        private static void SaveImage(BitmapSource TempImage, string TempImagePath)
+        private static void SaveImage(BitmapSource TempImage, string TempImagePath) // 保存图像文件
         {
             // 获取图像的编码器
             BitmapEncoder TempEncoder = new PngBitmapEncoder(); // 使用PNG编码器
@@ -796,8 +822,8 @@ namespace WindowsDOC.Pages
             using FileStream fileStream = new(TempImagePath, FileMode.Create);
             TempEncoder.Save(fileStream);
         }
-        // 读取
-        private void ReadData()
+
+        private void ReadData() // 读取
         {
             string JsonFilePath = Path.Combine(DataDirectory, "Data.json");
             if (File.Exists(JsonFilePath))
@@ -822,8 +848,7 @@ namespace WindowsDOC.Pages
                 }
             }
         }
-        // 读取图像文件
-        private static BitmapSource? ReadImage(string TempImagePath)
+        private static BitmapSource? ReadImage(string TempImagePath) // 读取图像文件
         {
             if (File.Exists(TempImagePath))
             {
@@ -837,9 +862,5 @@ namespace WindowsDOC.Pages
             }
             return null;
         }
-
-
     }
-
-
 }
