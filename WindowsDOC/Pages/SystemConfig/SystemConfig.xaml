@@ -1,0 +1,132 @@
+﻿<Page
+    x:Class="WindowsDOC.Pages.SystemConfig.SystemConfig"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:local="clr-namespace:WindowsDOC.Control"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SystemConfig"
+    d:DesignHeight="500"
+    d:DesignWidth="600"
+    Foreground="{DynamicResource ColorBrushMain2}"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <!--  定义 ListViewItem 的样式  -->
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border
+                            x:Name="BorderBackground"
+                            Padding="2"
+                            CornerRadius="5">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid x:Name="GridLayout">
+        <!--  定义布局  -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Style="{StaticResource TextBlockStyleTitle}" Text="电脑概览" />
+
+        <!--  占用率  -->
+        <ListView
+            x:Name="ListViewUsage"
+            Grid.Row="1"
+            d:ItemsSource="{d:SampleData ItemCount=5}"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            ItemContainerStyle="{DynamicResource ListViewItemStyle}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectionMode="Single">
+            <!--  内嵌布局  -->
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <!--  模板组成  -->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:CircularProgressControl
+                        Width="65"
+                        Height="65"
+                        PrimaryColor1="{DynamicResource ColorMain1}"
+                        PrimaryColor2="{DynamicResource ColorMain2}"
+                        Progress="{Binding Progress}"
+                        ProgressText="{Binding ProgressText}"
+                        ProgressThickness="30" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!--  项目  -->
+        <ListView
+            x:Name="ListViewItems"
+            Grid.Row="2"
+            d:ItemsSource="{d:SampleData ItemCount=20}"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            Foreground="{DynamicResource ColorBrushMain2}"
+            ItemContainerStyle="{DynamicResource ListViewItemStyle}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectionMode="Single">
+            <!--  定义滚动条  -->
+            <ListView.Resources>
+                <Style BasedOn="{StaticResource ScrollBarStyle}" TargetType="ScrollBar" />
+            </ListView.Resources>
+            <!--  内嵌布局  -->
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <!--  模板组成  -->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="550">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="32" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <fa5:SvgAwesome
+                            Grid.Column="0"
+                            Width="20"
+                            Height="20"
+                            Margin="4"
+                            Foreground="{DynamicResource ColorBrushMain2}"
+                            Icon="{Binding Icon}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}" />
+                        <TextBox
+                            Grid.Column="2"
+                            IsReadOnly="True"
+                            Style="{StaticResource TextBoxStyle}"
+                            Text="{Binding Value}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>

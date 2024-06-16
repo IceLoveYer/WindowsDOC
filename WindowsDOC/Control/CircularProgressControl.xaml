@@ -1,0 +1,62 @@
+﻿<UserControl
+    x:Class="WindowsDOC.Control.CircularProgressControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ed="clr-namespace:Microsoft.Expression.Shapes;assembly=Microsoft.Expression.Drawing"
+    xmlns:local="clr-namespace:WindowsDOC.Control"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="UC_CPC"
+    mc:Ignorable="d">
+
+    <Viewbox>
+        <Grid Width="200" Height="200">
+            <!--  外环  -->
+            <Ellipse>
+                <Ellipse.Stroke>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="{Binding PrimaryColor1, ElementName=UC_CPC, FallbackValue='LightBlue'}" />
+                        <GradientStop Offset="1" Color="{Binding PrimaryColor2, ElementName=UC_CPC, FallbackValue='Blue'}" />
+                    </LinearGradientBrush>
+                </Ellipse.Stroke>
+            </Ellipse>
+            <!--  内环  -->
+            <Ellipse Margin="{Binding StrokeThickness, ElementName=Arc_Progress}">
+                <Ellipse.Stroke>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="{Binding PrimaryColor1, ElementName=UC_CPC, FallbackValue='LightBlue'}" />
+                        <GradientStop Offset="1" Color="{Binding PrimaryColor2, ElementName=UC_CPC, FallbackValue='Blue'}" />
+                    </LinearGradientBrush>
+                </Ellipse.Stroke>
+            </Ellipse>
+            <!--  进度  -->
+            <ed:Arc
+                x:Name="Arc_Progress"
+                EndAngle="{Binding Progress, ElementName=UC_CPC, FallbackValue='180'}"
+                StartAngle="0"
+                Stretch="None"
+                StrokeThickness="{Binding ProgressThickness, ElementName=UC_CPC, FallbackValue='30'}">
+                <ed:Arc.Stroke>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="{Binding PrimaryColor1, ElementName=UC_CPC, FallbackValue='LightBlue'}" />
+                        <GradientStop Offset="1" Color="{Binding PrimaryColor2, ElementName=UC_CPC, FallbackValue='Blue'}" />
+                    </LinearGradientBrush>
+                </ed:Arc.Stroke>
+            </ed:Arc>
+
+            <TextBlock
+                Margin="{Binding StrokeThickness, ElementName=Arc_Progress}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="35"
+                Text="{Binding ProgressText, ElementName=UC_CPC, FallbackValue='100%'}"
+                TextAlignment="Center"
+                TextWrapping="Wrap">
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{Binding PrimaryColor1, ElementName=UC_CPC, FallbackValue='LightBlue'}" />
+                </TextBlock.Foreground>
+            </TextBlock>
+        </Grid>
+    </Viewbox>
+
+</UserControl>

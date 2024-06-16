@@ -1,0 +1,364 @@
+﻿<Window
+    x:Class="WindowsDOC.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    x:Name="window"
+    Title="WindowsDOC"
+    Width="800"
+    Height="616"
+    MinWidth="800"
+    MinHeight="480"
+    AllowsTransparency="True"
+    Background="{x:Null}"
+    Foreground="{DynamicResource ColorBrushMain3}"
+    SizeChanged="Window_SizeChanged"
+    UseLayoutRounding="False"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+
+    <Window.Resources>
+        <!--  侧边栏 按钮  -->
+        <Style x:Key="MenuButton" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ColorBrushSidebarButton}" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="Height" Value="45" />
+            <Setter Property="Margin" Value="15,4,15,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}" />
+                    <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  侧边栏 按钮图标  -->
+        <Style x:Key="MenuButtonIcon" TargetType="fa5:SvgAwesome">
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
+        </Style>
+
+        <!--  侧边栏 按钮文字  -->
+        <Style x:Key="MenuButtonText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="12,0,0,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
+        </Style>
+        <!--  侧边栏 按钮激活背景  -->
+        <Style
+            x:Key="ActivatedMenuButton"
+            BasedOn="{StaticResource MenuButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain2}" />
+        </Style>
+
+    </Window.Resources>
+
+    <!--  通过拖拽调整“透明窗口”的尺寸  -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="15" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <!--  设置托盘  -->
+        <tb:TaskbarIcon
+            x:Name="MyNotifyIcon"
+            IconSource="/Image/WindowsDOC.ico"
+            ToolTipText="WindowsDOC"
+            TrayLeftMouseDown="MyNotifyIcon_TrayLeftMouseDown"
+            TrayRightMouseDown="MyNotifyIcon_TrayRightMouseDown">
+            <!--  上下文菜单  -->
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu Style="{DynamicResource MenuStyle}">
+                    <MenuItem
+                        Click="MyNotifyIconMenuItemShow_Click"
+                        Header="显示窗口"
+                        Style="{DynamicResource MenuItemStyle}" />
+                    <MenuItem
+                        Click="MyNotifyIconMenuItemExit_Click"
+                        Header="退出程序"
+                        Style="{DynamicResource MenuItemStyle}" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+
+
+        <!--  主窗口界面，内边距+圆角+阴影  -->
+        <Border
+            x:Name="BorderMain"
+            Margin="10"
+            Padding="10"
+            Background="{DynamicResource ColorBrushBackground}"
+            BorderBrush="{DynamicResource ColorBrushBackgroundBorder}"
+            BorderThickness="1,1,1,1"
+            CornerRadius="15"
+            Style="{StaticResource BorderShadedStyle}">
+
+            <!--  主要布局  -->
+            <Grid x:Name="GridLayout">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+
+                <!--  侧边栏  -->
+                <Border Margin="0,0,10,0" CornerRadius="15">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="{DynamicResource ColorMain1}" />
+                            <GradientStop Offset="0.8" Color="{DynamicResource ColorMain2}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel>
+                        <TextBlock
+                            x:Name="TextBlockLogo"
+                            Margin="0,35,0,20"
+                            FontFamily="Segoe Script"
+                            FontSize="30"
+                            MouseDown="TextBlock_MouseDown"
+                            Text="IceYer"
+                            TextAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <!--  鼠标悬浮时的触发器  -->
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain2}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <Button
+                            x:Name="ButtonLauncher"
+                            Click="Button_Click_3"
+                            Style="{DynamicResource ActivatedMenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="solid_rocket" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="启动器" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Click="Button_Click_4" Style="{DynamicResource MenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="Brands_Windows" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="系统配置" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Click="Button_Click_5" Style="{DynamicResource MenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="Solid_NetworkWired" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="网络配置" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Click="Button_Click_6" Style="{DynamicResource MenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="Solid_Link" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="链接配置" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Click="Button_Click_7" Style="{DynamicResource MenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="Solid_Globe" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="浏览器" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button
+                            x:Name="ButtonSetting"
+                            Click="Button_Click_8"
+                            Style="{DynamicResource MenuButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:SvgAwesome Icon="Solid_Cog" Style="{DynamicResource MenuButtonIcon}" />
+                                <TextBlock Style="{DynamicResource MenuButtonText}" Text="软件设置" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!--  右侧内容  -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="38" />
+                    </Grid.RowDefinitions>
+
+
+
+                    <!--  导航栏  -->
+                    <Border
+                        Background="{DynamicResource ColorBrushTopBar}"
+                        CornerRadius="15"
+                        MouseDown="Border_MouseDown_1"
+                        MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  标题  -->
+                            <Label
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                Content="WindowsDOC"
+                                FontSize="16"
+                                Foreground="{DynamicResource ColorBrushMain1}" />
+
+
+                            <!--  控制钮  -->
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="0,7,5,7"
+                                Orientation="Horizontal">
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Save"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Solid_Save" Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Refresh"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Solid_Sync" Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Minimize"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Regular_WindowMinimize" Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Maximize"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome
+                                        x:Name="SvgAwesomeMaximize"
+                                        Icon="Regular_WindowMaximize"
+                                        Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                                <Button
+                                    Width="30"
+                                    Click="Button_Click_Close"
+                                    Style="{DynamicResource ButtonStyle}">
+                                    <fa5:SvgAwesome Icon="Regular_WindowClose" Style="{DynamicResource ButtonIcon}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!--  分隔条  -->
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,5,0,5"
+                        CornerRadius="5">
+                        <Border.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0" Color="{DynamicResource ColorMain1}" />
+                                <GradientStop Offset="0.8" Color="{DynamicResource ColorMain2}" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+
+                    <!--  通知队列  -->
+                    <StackPanel
+                        x:Name="StackPanelNotification"
+                        Grid.Row="2"
+                        Grid.RowSpan="1"
+                        Width="300"
+                        Margin="0,6,0,6"
+                        Panel.ZIndex="1" />
+
+                    <!--  引用其他窗口  -->
+                    <Border
+                        Grid.Row="2"
+                        Background="{DynamicResource ColorBrushMainFrame}"
+                        BorderThickness="2"
+                        CornerRadius="10">
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Color="{DynamicResource ColorMain1}" />
+                                <GradientStop Offset="1" Color="{DynamicResource ColorMain2}" />
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <Frame
+                            x:Name="MainContentFrame"
+                            Margin="10"
+                            BorderBrush="{x:Null}"
+                            Navigating="MainContentFrame_Navigating"
+                            NavigationUIVisibility="Hidden" />
+                    </Border>
+
+                    <!--  底栏  -->
+                    <Border
+                        Grid.Row="3"
+                        Margin="0,5,0,0"
+                        Background="{DynamicResource ColorBrushMain2}"
+                        CornerRadius="10">
+                        <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                x:Name="TextBlockCurrentVersion"
+                                HorizontalAlignment="Center"
+                                Text="当前版本：0.0.0.0" />
+                            <TextBlock
+                                x:Name="TextBlockInstalledVersion"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"
+                                Text="检查更新">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <!--  鼠标悬浮时的触发器  -->
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                Text="整合实用的小工具 汪！" />
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

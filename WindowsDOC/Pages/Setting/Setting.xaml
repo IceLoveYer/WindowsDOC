@@ -1,0 +1,228 @@
+﻿<Page
+    x:Class="WindowsDOC.Pages.Setting.Setting" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:fa5="http://schemas.fontawesome.com/icons/" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" Title="Setting" d:DesignHeight="500"
+    d:DesignWidth="600"
+    Foreground="{DynamicResource ColorBrushMain2}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="StackPanelStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Height" Value="30" />
+        </Style>
+        <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Width" Value="90" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="BorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Margin" Value="5,2.5,5,2.5" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ColorBrushMain1}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style x:Key="ColorPickerStyle" TargetType="{x:Type xctk:ColorPicker}">
+            <Setter Property="ShowRecentColors" Value="True" />
+            <Setter Property="Background" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="BorderBrush" Value="{x:Null}" />
+            <Setter Property="DropDownBackground" Value="{DynamicResource ColorBrushMain2}" />
+            <Setter Property="DropDownBorderBrush" Value="{x:Null}" />
+            <Setter Property="HeaderBackground" Value="{DynamicResource ColorBrushMain1}" />
+            <Setter Property="HeaderForeground" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="TabBackground" Value="{DynamicResource ColorBrushMain1}" />
+            <Setter Property="TabForeground" Value="{DynamicResource ColorBrushMain3}" />
+            <Setter Property="ShowDropDownButton" Value="False" />
+            <EventSetter Event="SelectedColorChanged" Handler="ColorPicker_SelectedColorChanged" />
+        </Style>
+
+        <Style x:Key="TextBlockStyle_Focus" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="20,8,20,0" />
+            <Style.Triggers>
+                <!--  鼠标悬停时的背景色  -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  定义 ListViewItem 的样式  -->
+        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border x:Name="BorderBackground"
+                            Padding="2"
+                            Background="{DynamicResource ColorBrushMainFrame}"
+                            CornerRadius="5">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid x:Name="GridLayout">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Width="{Binding Width, ElementName=GridLayout}" Style="{DynamicResource TextBlockStyleTitle}" Text="颜色（全透明会导致事件异常哦）" />
+
+            <WrapPanel HorizontalAlignment="Center">
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调1" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerMain1" SelectedColor="{DynamicResource ColorMain1}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调2" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerMain2" SelectedColor="{DynamicResource ColorMain2}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主色调3" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerMain3" SelectedColor="{DynamicResource ColorMain3}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口背景" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerBackground" SelectedColor="{DynamicResource ColorBackground}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="窗口边框" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerBackgroundBorder" SelectedColor="{DynamicResource ColorBackgroundBorder}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="侧边按钮背景" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerSidebarButton" SelectedColor="{DynamicResource ColorSidebarButton}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="顶栏背景" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerTopBar" SelectedColor="{DynamicResource ColorTopBar}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="主框架背景" />
+                    <Border Style="{StaticResource BorderStyle}">
+                        <xctk:ColorPicker x:Name="ColorPickerMainFrame" SelectedColor="{DynamicResource ColorMainFrame}" Style="{DynamicResource ColorPickerStyle}" />
+                    </Border>
+                </StackPanel>
+
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="预设颜色" />
+                    <ComboBox x:Name="ComboBoxColors"
+                        Width="90" HorizontalContentAlignment="Center" DisplayMemberPath="Name"
+                        SelectionChanged="ComboBoxColors_SelectionChanged"
+                        Style="{DynamicResource ComboBoxStyle}" />
+                </StackPanel>
+            </WrapPanel>
+
+            <TextBlock
+                Width="{Binding Width, ElementName=GridLayout}"
+                Margin="6,20,6,6"
+                Style="{DynamicResource TextBlockStyleTitle}"
+                Text="目录" />
+
+            <ListView x:Name="ListViewItems" Grid.Row="1"
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Foreground="{DynamicResource ColorBrushMain2}"
+                ItemContainerStyle="{DynamicResource ListViewItemStyle}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionMode="Single">
+                <!--  定义滚动条  -->
+                <ListView.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBarStyle}" />
+                </ListView.Resources>
+                <!--  内嵌布局  -->
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <!--  模板组成  -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="550">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition Width="70" />
+                            </Grid.ColumnDefinitions>
+
+                            <fa5:SvgAwesome Grid.Column="0"
+                                Width="20" Height="20" Margin="4"
+                                Foreground="{DynamicResource ColorBrushMain2}"
+                                Icon="{Binding Icon}" />
+                            <TextBlock Grid.Column="1"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Text="{Binding Name}" />
+                            <TextBox Grid.Column="2"
+                                IsReadOnly="True"
+                                Style="{StaticResource TextBoxStyle}"
+                                Text="{Binding Dir}" />
+                            <Button Grid.Column="3"
+                                Click="ButtonOpenFolder_Click" Content="打开目录"
+                                Style="{DynamicResource ButtonStyle}" />
+                            <Button Grid.Column="4"
+                                Click="ButtonOpenFile_Click" Content="打开配置"
+                                Style="{DynamicResource ButtonStyle}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Width="{Binding Width, ElementName=GridLayout}" Style="{DynamicResource TextBlockStyleTitle}" Text="关于" />
+
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock x:Name="TextBlockQq"
+                    MouseLeftButtonDown="TextBlockQq_MouseLeftButtonDown"
+                    Style="{DynamicResource TextBlockStyle_Focus}"
+                    Text="QQ 1750310791" />
+                <TextBlock x:Name="TextBlockQqGroup"
+                    MouseLeftButtonDown="TextBlockQqGroup_MouseLeftButtonDown"
+                    Style="{DynamicResource TextBlockStyle_Focus}"
+                    Text="QQ群 200507900" />
+                <TextBlock x:Name="TextBlockWeb"
+                    MouseLeftButtonDown="TextBlockWeb_MouseLeftButtonDown"
+                    Style="{DynamicResource TextBlockStyle_Focus}"
+                    Text="官网 www.iceyer.cn" />
+                <TextBlock x:Name="TextBlockWebHelp"
+                    MouseLeftButtonDown="TextBlockWebHelp_MouseLeftButtonDown"
+                    Style="{DynamicResource TextBlockStyle_Focus}"
+                    Text="开源地址 GitHub" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

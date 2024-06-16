@@ -1,0 +1,220 @@
+﻿<Page
+    x:Class="WindowsDOC.Pages.NetworkConfig.NetworkConfig"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:local="clr-namespace:WindowsDOC.Control"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+    Title="NetworkConfig"
+    d:DesignHeight="500"
+    d:DesignWidth="600"
+    Foreground="{DynamicResource ColorBrushMain2}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Width" Value="80" />
+        </Style>
+
+        <Style x:Key="StackPanelStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Height" Value="30" />
+        </Style>
+
+        <Style x:Key="IPAddressControlStyle" TargetType="{x:Type local:IPAddressControl}">
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrushMain1}" />
+        </Style>
+
+
+    </Page.Resources>
+
+    <Grid HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Style="{StaticResource TextBlockStyleTitle}" Text="网络信息" />
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <!--  定义滚动条  -->
+            <ScrollViewer.Resources>
+                <Style BasedOn="{StaticResource ScrollBarStyle}" TargetType="ScrollBar" />
+            </ScrollViewer.Resources>
+
+            <StackPanel Margin="0,0,10,0" HorizontalAlignment="Center">
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="适配器名称" />
+                    <ComboBox
+                        x:Name="ComboBoxName"
+                        Width="300"
+                        HorizontalContentAlignment="Center"
+                        DisplayMemberPath="Name"
+                        SelectionChanged="ComboBoxName_SelectionChanged"
+                        Style="{DynamicResource ComboBoxStyle}" />
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="描述" />
+                    <TextBox
+                        x:Name="TextBoxDescription"
+                        Width="300"
+                        IsReadOnly="True"
+                        Style="{DynamicResource TextBoxStyle}"
+                        TextAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="MAC" />
+                    <TextBox
+                        x:Name="TextBoxMac"
+                        Width="300"
+                        Style="{DynamicResource TextBoxStyle}"
+                        TextAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="DHCP" />
+                    <UniformGrid Width="300" Columns="2">
+                        <RadioButton
+                            x:Name="RadioButtonDhcpOn"
+                            Checked="RadioButtonDhcpOn_Checked"
+                            Click="RadioButtonDhcpOn_Click"
+                            Content="自动获取"
+                            Style="{DynamicResource RadioButtonStyle}"
+                            Unchecked="RadioButtonDhcpOn_Unchecked" />
+                        <RadioButton
+                            x:Name="RadioButtonDhcpOff"
+                            Grid.Column="1"
+                            Content="手动设置"
+                            Style="{DynamicResource RadioButtonStyle}" />
+                    </UniformGrid>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="IP地址" />
+                    <local:IPAddressControl
+                        x:Name="IPAddressControlAddress"
+                        IPAddress="192.168.0.1"
+                        Style="{DynamicResource IPAddressControlStyle}" />
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="子网掩码" />
+                    <local:IPAddressControl
+                        x:Name="IPAddressControlMask"
+                        IPAddress="255.255.255.0"
+                        Style="{DynamicResource IPAddressControlStyle}" />
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="默认网关" />
+                    <local:IPAddressControl
+                        x:Name="IPAddressControlGateway"
+                        IPAddress="192.168.0.1"
+                        Style="{DynamicResource IPAddressControlStyle}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="DNS" />
+                    <UniformGrid Width="300" Columns="2">
+                        <RadioButton
+                            x:Name="RadioButtonDhcpDnsOn"
+                            Checked="RadioButtonDhcpDnsOn_Checked"
+                            Click="RadioButtonDhcpDnsOn_Click"
+                            Content="自动获取"
+                            Style="{DynamicResource RadioButtonStyle}"
+                            Unchecked="RadioButtonDhcpDnsOn_Unchecked" />
+                        <RadioButton
+                            x:Name="RadioButtonDhcpDnsOff"
+                            Grid.Column="1"
+                            Content="手动设置"
+                            Style="{DynamicResource RadioButtonStyle}" />
+                    </UniformGrid>
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="首选DNS" />
+                    <local:IPAddressControl
+                        x:Name="IPAddressControlDnsPrimary"
+                        IPAddress="192.168.0.1"
+                        Style="{DynamicResource IPAddressControlStyle}" />
+                </StackPanel>
+
+                <StackPanel Style="{DynamicResource StackPanelStyle}">
+                    <TextBlock Style="{DynamicResource TextBlockStyle}" Text="备用DNS" />
+                    <local:IPAddressControl
+                        x:Name="IPAddressControlDnsSecondary"
+                        IPAddress="114.114.114.114"
+                        Style="{DynamicResource IPAddressControlStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+
+
+        <UniformGrid
+            Grid.Row="2"
+            Margin="0,10,0,0"
+            Columns="5">
+            <Button
+                Margin="2,2,2,2"
+                Click="Button_Click_1"
+                Style="{DynamicResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome Icon="Solid_Ethernet" Style="{DynamicResource ButtonIcon}" />
+                    <TextBlock
+                        Margin="0,5,5,5"
+                        VerticalAlignment="Center"
+                        Text="网络连接属性" />
+                </StackPanel>
+            </Button>
+            <Button Click="Button_Click_2" Style="{DynamicResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome Icon="Solid_TimesCircle" Style="{DynamicResource ButtonIcon}" />
+                    <TextBlock
+                        Margin="0,5,5,5"
+                        VerticalAlignment="Center"
+                        Text="禁用当前网卡" />
+                </StackPanel>
+            </Button>
+            <Button Click="Button_Click_3" Style="{DynamicResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome Icon="Solid_CheckCircle" Style="{DynamicResource ButtonIcon}" />
+                    <TextBlock
+                        Margin="0,5,5,5"
+                        VerticalAlignment="Center"
+                        Text="启用当前网卡" />
+                </StackPanel>
+            </Button>
+            <Button Click="Button_Click_4" Style="{DynamicResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome Icon="Brands_Monero" Style="{DynamicResource ButtonIcon}" />
+                    <TextBlock
+                        Margin="0,5,5,5"
+                        VerticalAlignment="Center"
+                        Text="修改MAC" />
+                </StackPanel>
+            </Button>
+            <Button Click="Button_Click_5" Style="{DynamicResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome Icon="Solid_InfoCircle" Style="{DynamicResource ButtonIcon}" />
+                    <TextBlock
+                        Margin="0,5,5,5"
+                        VerticalAlignment="Center"
+                        Text="修改IP及DNS" />
+                </StackPanel>
+            </Button>
+        </UniformGrid>
+
+
+    </Grid>
+
+</Page>
